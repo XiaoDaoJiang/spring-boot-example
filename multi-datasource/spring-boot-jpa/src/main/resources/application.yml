@@ -1,0 +1,24 @@
+app:
+  datasource:
+    first:
+      url: "jdbc:mysql://localhost/first"
+      username: "root"
+      password: "root"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      configuration:
+        maximum-pool-size: 30
+
+    second:
+      url: "jdbc:mysql://localhost/second"
+      username: "root"
+      password: "root"
+      max-total: 30
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+spring:
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect

@@ -1,0 +1,20 @@
+app:
+  datasource:
+    first:
+      url: "jdbc:mysql://localhost/first"
+      username: "root"
+      password: "root"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      configuration:
+        maximum-pool-size: 30
+
+    second:
+      url: "jdbc:mysql://localhost/second"
+      username: "root"
+      password: "root"
+      max-total: 30
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      configuration:
+        maximum-pool-size: 30
+#mybatis:
+#  mapper-locations: classpath:mapper
