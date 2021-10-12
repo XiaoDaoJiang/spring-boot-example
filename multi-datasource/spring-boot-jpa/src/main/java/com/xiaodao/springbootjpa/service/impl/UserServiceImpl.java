@@ -3,7 +3,6 @@ package com.xiaodao.springbootjpa.service.impl;
 import com.xiaodao.springbootjpa.dao.UserRepository;
 import com.xiaodao.springbootjpa.model.User;
 import com.xiaodao.springbootjpa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +17,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+
+	public UserServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public List<User> findUserByAgeWithin(Integer maxAge) {
-		return userRepository.findByAgeIsWithin(maxAge);
+		return userRepository.findByAgeLessThan(maxAge);
 	}
 
 	@Override

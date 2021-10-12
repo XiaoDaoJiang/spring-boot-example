@@ -1,7 +1,11 @@
 package com.xiaodao.springbootjpa.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.xiaodao.springbootjpa.model.User;
+import com.xiaodao.springbootjpa.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * UserController
@@ -13,4 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("user")
 public class UserController {
 
+	@Autowired
+	private UserService userService;
+
+	@GetMapping
+	public List<User> getUser(@RequestParam(required = false, defaultValue = "100") Integer maxAge) {
+		return userService.findUserByAgeWithin(maxAge);
+	}
+
+	@PostMapping
+	public User saveUser(User user) {
+		return userService.saveUser(user);
+	}
 }

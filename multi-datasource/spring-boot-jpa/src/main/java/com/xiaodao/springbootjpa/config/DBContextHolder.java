@@ -29,7 +29,7 @@ public class DBContextHolder {
 		}
 		if (index == 0) {
 			set(DBTypeEnum.SLAVE1);
-			System.out.println("切换到slave1");
+			// System.out.println("切换到slave1");
 		} else {
 			set(DBTypeEnum.SLAVE2);
 			// System.out.println("切换到slave2");
