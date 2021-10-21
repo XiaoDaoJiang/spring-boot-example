@@ -1,8 +1,8 @@
 package com.xiaodao.springbootjpa.service.impl;
 
+import com.xiaodao.common.model.User;
+import com.xiaodao.service.UserService;
 import com.xiaodao.springbootjpa.dao.UserRepository;
-import com.xiaodao.springbootjpa.model.User;
-import com.xiaodao.springbootjpa.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

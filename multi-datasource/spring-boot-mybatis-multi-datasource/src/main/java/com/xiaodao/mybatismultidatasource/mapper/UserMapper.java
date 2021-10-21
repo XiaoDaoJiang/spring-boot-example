@@ -1,9 +1,10 @@
 package com.xiaodao.mybatismultidatasource.mapper;
 
-import com.xiaodao.mybatismultidatasource.model.User;
-import com.xiaodao.mybatismultidatasource.model.UserExample;
-import java.util.List;
+import com.xiaodao.common.model.User;
+import com.xiaodao.common.model.UserExample;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface UserMapper {
     long countByExample(UserExample example);

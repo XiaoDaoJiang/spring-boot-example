@@ -1,7 +1,7 @@
 package com.xiaodao.springbootjpa.controller;
 
-import com.xiaodao.springbootjpa.model.User;
-import com.xiaodao.springbootjpa.service.UserService;
+import com.xiaodao.common.model.User;
+import com.xiaodao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

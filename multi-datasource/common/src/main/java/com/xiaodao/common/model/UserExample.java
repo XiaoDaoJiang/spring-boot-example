@@ -1,4 +1,4 @@
-package com.xiaodao.mybatismultidatasource.model;
+package com.xiaodao.common.model;
 
 import java.util.ArrayList;
 import java.util.List;

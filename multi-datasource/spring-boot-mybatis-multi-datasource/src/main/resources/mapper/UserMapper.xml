@@ -67,7 +67,7 @@
   <sql id="Base_Column_List">
     user.id as user_id, user.`name` as `user_name`, user.age as user_age
   </sql>
-  <select id="selectByExample" parameterType="com.xiaodao.mybatismultidatasource.model.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.xiaodao.common.model.UserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -99,7 +99,7 @@
     delete from user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.xiaodao.mybatismultidatasource.model.UserExample">
+  <delete id="deleteByExample" parameterType="com.xiaodao.common.model.UserExample">
     delete from user user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -128,7 +128,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.xiaodao.mybatismultidatasource.model.UserExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.xiaodao.common.model.UserExample" resultType="java.lang.Long">
     select count(*) from user user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

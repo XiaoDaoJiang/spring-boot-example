@@ -42,6 +42,8 @@
     <modules>
         <module>spring-boot-mybatis-multi-datasource</module>
         <module>spring-boot-jpa</module>
+        <module>dynamic-datasource</module>
+        <module>common</module>
     </modules>
 
     <build>

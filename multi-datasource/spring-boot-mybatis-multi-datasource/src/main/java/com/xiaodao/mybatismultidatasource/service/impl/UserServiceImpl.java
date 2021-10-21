@@ -1,9 +1,9 @@
 package com.xiaodao.mybatismultidatasource.service.impl;
 
+import com.xiaodao.common.model.User;
+import com.xiaodao.common.model.UserExample;
 import com.xiaodao.mybatismultidatasource.mapper.UserMapper;
-import com.xiaodao.mybatismultidatasource.model.User;
-import com.xiaodao.mybatismultidatasource.model.UserExample;
-import com.xiaodao.mybatismultidatasource.service.UserService;
+import com.xiaodao.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,19 +19,19 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 
-	@Resource
-	private UserMapper userMapper;
+    @Resource
+    private UserMapper userMapper;
 
-	@Override
-	public List<User> findUserByAgeWithin(Byte maxAge) {
-		UserExample userExample = new UserExample();
-		userExample.createCriteria().andAgeBetween((byte) 0, maxAge);
-		return userMapper.selectByExample(userExample);
-	}
+    @Override
+    public List<User> findUserByAgeWithin(Integer maxAge) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAgeBetween((byte) 0, maxAge.byteValue());
+        return userMapper.selectByExample(userExample);
+    }
 
-	@Override
-	public User saveUser(User user) {
-		int i = userMapper.insertSelective(user);
-		return user;
-	}
+    @Override
+    public User saveUser(User user) {
+        int i = userMapper.insertSelective(user);
+        return user;
+    }
 }

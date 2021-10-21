@@ -8,7 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="spring-boot-jpa" />
+        <module name="common" />
         <module name="spring-boot-mybatis-multi-datasource" />
+        <module name="dynamic-datasource" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +19,8 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="common" options="-parameters" />
+      <module name="dynamic-datasource" options="-parameters" />
       <module name="multi-datasource" options="-parameters" />
       <module name="spring-boot-jpa" options="-parameters" />
       <module name="spring-boot-mybatis-multi-datasource" options="-parameters" />
