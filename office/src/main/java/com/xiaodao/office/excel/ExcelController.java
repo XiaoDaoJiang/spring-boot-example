@@ -5,9 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.xiaodao.office.excel.dto.UploadData;
 import com.xiaodao.office.excel.service.ExcelService;
-import com.xiaodao.office.excel.service.UploadDataListener;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.MutableTriple;
 import org.slf4j.MDC;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StopWatch;
@@ -19,11 +17,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -50,31 +46,10 @@ public class ExcelController {
 
         String id = "controller-" + RandomUtil.randomNumbers(6);
         StopWatch stopWatch = new StopWatch(id);
-        MutableTriple<Integer, List<UploadData>, List<Future<List<UploadData>>>> result = new MutableTriple<>();
-        UploadDataListener readListener = new UploadDataListener(excelService, result);
-
-        stopWatch.start("准备数据缓存");
-        readListener.initMap();
+        stopWatch.start("接收到上传的文件，开始导入");
+        List<UploadData> finalResult = excelService.importData(file);
         stopWatch.stop();
 
-        stopWatch.start("解析导入数据");
-        EasyExcelFactory.read(file.getInputStream(), UploadData.class, readListener).sheet().doRead();
-        stopWatch.stop();
-
-        //
-        stopWatch.start("处理结果汇总");
-        List<UploadData> finalResult = new ArrayList<>(result.left);
-        for (final Future<List<UploadData>> future : result.right) {
-            // stopWatch.start("阻塞获取异步任务处理结果");
-            List<UploadData> dataList = future.get();
-            finalResult.addAll(dataList);
-            // stopWatch.stop();
-
-        }
-        stopWatch.stop();
-        readListener.clearMap();
-
-        finalResult.addAll(result.middle);
         //    export
         if (!finalResult.isEmpty()){
             stopWatch.start("处理完毕，导出错误数据");
