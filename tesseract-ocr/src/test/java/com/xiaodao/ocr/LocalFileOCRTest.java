@@ -18,11 +18,11 @@ public class LocalFileOCRTest {
 //        System.setProperty("java.library.path", "/home/linux-x86-64/");
 //        System.out.println(System.getProperty("java.library.path"));
 //        System.loadLibrary("tesseract");
-        File imageFile = new File("/home/spring-boot-example/tesseract-ocr/src/test/resouces/images/phototest.tif");
+        File imageFile = new File("images/phototest.tif");
         // ITesseract instance = new Tesseract();  // JNA Interface Mapping
         ITesseract instance = new Tesseract1(); // JNA Direct Mapping
         // /usr/share/tesseract/4/tessdata
-        instance.setDatapath("/home/spring-boot-example/tesseract-ocr/src/test/resouces/tessdata"); // path to tessdata directory
+        instance.setDatapath("tessdata"); // path to tessdata directory
 
         try {
             String result = instance.doOCR(imageFile);
