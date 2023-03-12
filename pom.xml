@@ -18,6 +18,9 @@
     <modules>
         <module>misc</module>
         <module>tesseract-ocr</module>
+        <module>scheduler</module>
+        <module>async</module>
+        <module>quartz</module>
     </modules>
     <packaging>pom</packaging>
 
