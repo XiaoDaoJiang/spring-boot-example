@@ -21,6 +21,7 @@
         <module>scheduler</module>
         <module>async</module>
         <module>quartz</module>
+        <module>transaction</module>
     </modules>
     <packaging>pom</packaging>
 
