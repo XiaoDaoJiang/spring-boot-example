@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/db_example
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 2714@Jht
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      filters: stat,slf4j
+      stat-view-servlet:
+        enabled: true
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 2000
+          slow-sql-log-level: debug
+          db-type: mysql
+        slf4j:
+          enabled: true
+          statement-executable-sql-log-enable: true
+          statement-sql-pretty-format: true
+          statement-log-enabled: true
+          statement-prepare-after-log-enabled: false
+          statement-parameter-set-log-enabled: false
+          statement-execute-query-after-log-enabled: false
+
+      web-stat-filter:
+        enabled: true
+        url-pattern: /api/*
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+        session-stat-enable: true
+        profile-enable: true # 配置profileEnable能够监控单个url调用的sql列表。
+
+#  jpa:
+#    database: mysql
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+
+
+logging:
+  level:
+    druid:
+      sql:
+        Statement: debug
+

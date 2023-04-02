@@ -23,6 +23,8 @@
         <module>quartz</module>
         <module>transaction</module>
         <module>xxl-job</module>
+        <module>db-connection-pool</module>
+        <module>p6spy</module>
     </modules>
     <packaging>pom</packaging>
 

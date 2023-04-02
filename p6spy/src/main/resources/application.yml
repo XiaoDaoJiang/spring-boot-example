@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://localhost/db_example
+    username: root
+    password: 2714@Jht
+
+#  jpa:
+#    database: mysql
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+
+
+logging:
+  level:
+    druid:
+      sql:
+        Statement: debug
+
