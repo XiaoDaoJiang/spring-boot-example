@@ -25,6 +25,7 @@
         <module>xxl-job</module>
         <module>db-connection-pool</module>
         <module>p6spy</module>
+        <module>metrics</module>
     </modules>
     <packaging>pom</packaging>
 
