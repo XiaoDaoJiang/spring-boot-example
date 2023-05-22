@@ -17,15 +17,20 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>misc</module>
-        <module>tesseract-ocr</module>
+<!--        <module>tesseract-ocr</module>-->
         <module>scheduler</module>
         <module>async</module>
-        <module>quartz</module>
+<!--        <module>quartz</module>-->
         <module>transaction</module>
-        <module>xxl-job</module>
+<!--        <module>xxl-job</module>-->
         <module>db-connection-pool</module>
-        <module>p6spy</module>
+<!--        <module>p6spy</module>-->
         <module>metrics</module>
+        <module>elasticsearch</module>
+        <module>mq</module>
+        <module>dao</module>
+        <module>dao/jpa</module>
+        <module>common</module>
     </modules>
     <packaging>pom</packaging>
 
