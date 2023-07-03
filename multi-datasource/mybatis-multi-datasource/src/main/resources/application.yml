@@ -1,0 +1,18 @@
+app:
+  datasource:
+    first:
+      url: "jdbc:mysql://localhost/first"
+      username: "root"
+      password: "1234"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      configuration:
+        maximum-pool-size: 30
+
+    second:
+      url: "jdbc:mysql://localhost/second"
+      username: "root"
+      password: "1234"
+      max-total: 30
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      configuration:
+        maximum-pool-size: 30

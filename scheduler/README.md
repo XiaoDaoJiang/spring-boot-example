@@ -28,8 +28,16 @@
     
     }
     ```
+   
+## 关闭
+只有一个地方启用，直接注释掉 @org.springframework.scheduling.annotation.EnableScheduling
+或者在Spring boot 启动类上 ，使用注解排除
+```java
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(value = {org.springframework.scheduling.annotation.EnableScheduling.class})})
 
-# 配置解析
+```
+
+## 配置解析
 
 1. @Scheduled 任务
    org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor.processScheduled(Scheduled scheduled,
@@ -162,7 +170,7 @@ protected void scheduleTasks(){
 }
 ```
 
-# 自动配置
+## 自动配置
 
 org.springframework.boot.autoconfigure.task.TaskSchedulingProperties
 ```yaml

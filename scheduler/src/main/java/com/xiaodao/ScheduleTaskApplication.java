@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 @EnableScheduling
 @SpringBootApplication
+//@ComponentScan(excludeFilters = {@ComponentScan.Filter(value = {org.springframework.scheduling.annotation.EnableScheduling.class})})
 public class ScheduleTaskApplication /*implements SchedulingConfigurer*/ {
 
     Logger logger = LoggerFactory.getLogger(ScheduleTaskApplication.class);
