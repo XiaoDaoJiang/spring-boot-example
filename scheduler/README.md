@@ -99,8 +99,9 @@ public class AppConfig implements SchedulingConfigurer {
 }
 ```
 
-2.1 应用 SchedulingConfigurer 配置
-org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor.finishRegistration
+2.1 应用 SchedulingConfigurer 配置生效
+在方法 org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor.finishRegistration
+中，在容器中取出所有的 SchedulingConfigurer 的 Bean再遍历执行所有的 configureTasks 方法，对 ScheduledTaskRegistrar 进行配置
 
 ```java
       if(this.beanFactory instanceof ListableBeanFactory){
@@ -131,7 +132,10 @@ org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor.f
             this.registrar.afterPropertiesSet();
         }
 ```
-
+2.3 调度任务
+将所有解析的调度任务（triggerTask、cronTask、fixedRateTasks、fixedDelayTasks）放入调度器中，
+TaskScheduler(ThreadPoolTaskScheduler) => ScheduledExecutorService
+每种调度任务都会被包装成 ScheduledFuture（对应调度类型有对应实现类：ReschedulingRunnable（这个由spring提供，使得任务能够按照一定的规则重复执行（cron表达式））、ScheduledFutureTask） ，放入 ScheduledExecutorService 中
 ```java
 public void afterPropertiesSet(){
         scheduleTasks();
@@ -198,7 +202,7 @@ public class TaskSchedulingAutoConfiguration {
 
     /**
      * 若未配置任何 SchedulingConfigurer,TaskScheduler,ScheduledExecutorService 的 bean
-     * 则根据 TaskSchedulingProperties 配置的 TaskSchedulerBuilder 构建定时任务调度线程池（默认为单线程）
+     * 则根据 TaskSchedulingProperties 配置的 TaskSchedulerBuilder 构建定时任务调度线程池（默认为单线程:poolSize=3）
      */
     @Bean
     @ConditionalOnBean(
