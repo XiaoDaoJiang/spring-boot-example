@@ -1,5 +1,6 @@
 package com.xiaodao.mybatismultidatasource.config;
 
+import com.xiaodao.mybatismultidatasource.annotation.DS;
 import com.xiaodao.mybatismultidatasource.annotation.Master;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +65,17 @@ public class DataSourceAop {
 		MethodSignature signature = (MethodSignature) jp.getSignature();
 		String methodName = signature.getName();
 
-		if (signature.getMethod().isAnnotationPresent(Master.class) || !StringUtils.startsWithAny(methodName, "get", "select", "find")) {
+		// 先按注解指定判断
+		if (signature.getMethod().isAnnotationPresent(Master.class)) {
+			DBContextHolder.master();
+			return;
+		}
+		if (signature.getMethod().isAnnotationPresent(DS.class)) {
+			final DS ds = signature.getMethod().getAnnotation(DS.class);
+		}
+
+
+		if (!StringUtils.startsWithAny(methodName, "get", "select", "find")) {
 			DBContextHolder.master();
 		} else {
 			DBContextHolder.slave();

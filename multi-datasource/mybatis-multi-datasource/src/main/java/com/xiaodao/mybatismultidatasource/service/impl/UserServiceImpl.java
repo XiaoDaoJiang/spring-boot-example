@@ -34,4 +34,15 @@ public class UserServiceImpl implements UserService {
         int i = userMapper.insertSelective(user);
         return user;
     }
+
+    @Override
+    public boolean checkUserExist(User user) {
+        if (user.getId() != null) {
+            return userMapper.selectByPrimaryKey(user.getId()) != null;
+        } else {
+            final UserExample example = new UserExample();
+            example.createCriteria().andNameEqualTo(user.getName());
+            return userMapper.selectByExample(example) != null;
+        }
+    }
 }

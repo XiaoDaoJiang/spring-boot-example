@@ -16,4 +16,8 @@ public interface UserService {
     List<User> findUserByAgeWithin(Integer maxAge);
 
     User saveUser(User user);
+
+    default boolean checkUserExist(User user) {
+        return true;
+    }
 }

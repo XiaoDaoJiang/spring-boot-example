@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: 1234
-    url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

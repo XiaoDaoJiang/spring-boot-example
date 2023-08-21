@@ -14,30 +14,35 @@ import java.util.stream.Collectors;
 
 public class CsvSplitter {
 
-    public final Set<String> SPLIT_TABLE_NAME = Sets.newHashSet("PERSON_INFO", "PERSON_ATTACH");
+    public final Set<String> SPLIT_TABLE_NAME = Sets.newHashSet("JDA_DIC_ITEM",
+            "JDA_DIC_TYPE",
+            "JHC_PB_PERSON_INFO",
+            "JHC_PT_PERSON");
 
 
-    public void read() {
+    public void read(String schema) {
         CsvReader reader = CsvUtil.getReader();
         // 从文件中读取CSV数据
-        final String path = "C:\\Users\\xiaodao\\Downloads\\ree2.csv";
+        final String path = "C:\\Users\\xiaodaojiang\\Desktop\\uat2.csv";
         CsvData data = reader.read(FileUtil.file(path));
         List<CsvRow> rows = data.getRows();
         // 遍历行
         List<List<String>> aTableData = new ArrayList<>(100);
         String tableName = null;
         for (CsvRow csvRow : rows) {
-            List<String> rawList = csvRow.getRawList();
             final String curTableName = csvRow.get(0);
+            List<String> rawList = csvRow.getRawList().stream().skip(1).collect(Collectors.toList());
             if (tableName == null) {
-                tableName = StrUtil.removeAll(curTableName,'\uFEFF');
+                tableName = StrUtil.removeAll(curTableName, '\uFEFF');
+                tableName = StrUtil.unWrap(tableName, '\"');
             }
             // 换下张表
             else if (!tableName.equals(curTableName)) {
-                this.write(aTableData, tableName);
+                this.write(aTableData, tableName, schema);
                 aTableData.clear();
                 System.out.println("============================================");
                 tableName = curTableName;
+                rawList = rawList.stream().map(it -> StrUtil.unWrap(it, '\"')).collect(Collectors.toList());
             } else {
                 rawList = rawList.stream().map(it -> StrUtil.unWrap(it, '\'')).collect(Collectors.toList());
             }
@@ -48,21 +53,25 @@ public class CsvSplitter {
         }
 
         if (!aTableData.isEmpty()) {
-            this.write(aTableData, tableName);
+            this.write(aTableData, tableName, schema);
             aTableData.clear();
             System.out.println("============================================");
         }
 
     }
 
-    public void write(List<List<String>> aTaleData, String tableName) {
+    public void write(List<List<String>> aTaleData, String tableName, String schema) {
+        tableName = StrUtil.unWrap(tableName, '\"');
+        tableName = StrUtil.unWrap(tableName, '\'');
         // 指定路径和编码
-        CsvWriter writer = CsvUtil.getWriter("C:\\Users\\xiaodao\\Downloads\\" + tableName + ".csv", CharsetUtil.CHARSET_GBK);
+        CsvWriter writer = CsvUtil.getWriter("E:\\com\\jadefortune\\工作内容\\政务人员\\task\\测试数据\\" + schema + "\\" + tableName + ".csv",
+                CharsetUtil.systemCharset(),false);
         // 按行写出
         writer.write(aTaleData);
     }
 
     public static void main(String[] args) {
-        new CsvSplitter().read();
+        // new CsvSplitter().read("ZSJ_TEST_UAT_SHARD");
+        new CsvSplitter().read("ZSJ_TEST_UAT");
     }
 }

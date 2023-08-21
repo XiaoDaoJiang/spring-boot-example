@@ -8,6 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 import java.util.Map;
 
+
+/**
+ * flyWay 多数据源初始化
+ */
 @Configuration
 public class FlyWayMultiDataSourceConfiguration {
 
