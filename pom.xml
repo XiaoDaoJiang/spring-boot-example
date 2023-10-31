@@ -33,6 +33,8 @@
         <module>common</module>
         <module>cache</module>
         <module>starter</module>
+        <module>distribute-lock</module>
+        <module>bean</module>
     </modules>
     <packaging>pom</packaging>
 

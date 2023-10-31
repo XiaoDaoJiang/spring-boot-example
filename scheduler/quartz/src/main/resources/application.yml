@@ -32,6 +32,7 @@ spring:
             isClustered: true # 是集群模式
             clusterCheckinInterval: 1000
             useProperties: false
+            misfireThreshold: 60000
           # 线程池相关配置
           threadPool:
             threadCount: 10 # 线程池大小。默认为 10 。

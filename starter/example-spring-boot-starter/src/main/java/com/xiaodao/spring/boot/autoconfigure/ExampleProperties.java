@@ -1,4 +1,4 @@
-package com.xiaodao.example.spring.boot.autoconfigure;
+package com.xiaodao.spring.boot.autoconfigure;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,10 +1,12 @@
-package com.xiaodao.example.spring.boot.autoconfigure;
+package com.xiaodao.spring.boot.autoconfigure;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "example", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(ExampleProperties.class)
 // @AutoConfigureAfter
