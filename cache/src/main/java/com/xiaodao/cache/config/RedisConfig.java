@@ -22,7 +22,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import javax.annotation.Resource;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,9 +55,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
-        // 设置默认配置
+        // 设置默认配置（失效时间默认为0，永不过期）
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ZERO)
+                // .entryTtl(Duration.ZERO)
 //                .entryTtl(Duration.ofSeconds(20))   //设置缓存失效时间
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
@@ -68,6 +67,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         Map<String, RedisCacheConfiguration> customCacheConfig = new HashMap<>();
         redisTtlProperties.getTimeToLives().forEach((cacheNames, duration) -> {
             Arrays.stream(StringUtils.split(cacheNames, ",")).forEach(cache -> {
+                // 这里还可以自定义缓存键前缀：config.entryTtl(duration)..prefixCacheNameWith("")
                 customCacheConfig.put(cache, config.entryTtl(duration));
             });
         });

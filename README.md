@@ -24,3 +24,4 @@
 * p6spy
 * tesseract-ocr
 * lock
+* web
