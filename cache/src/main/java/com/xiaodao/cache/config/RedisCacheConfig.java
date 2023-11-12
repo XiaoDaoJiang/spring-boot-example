@@ -5,11 +5,10 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -21,21 +20,14 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
 @EnableConfigurationProperties(RedisTtlProperties.class)
 @Configuration
-@EnableCaching // 开启缓存支持
-public class RedisConfig extends CachingConfigurerSupport {
-
-    @Autowired
-    private RedisTtlProperties redisTtlProperties;
-
-    @Resource
-    private LettuceConnectionFactory lettuceConnectionFactory;
+public class RedisCacheConfig extends CachingConfigurerSupport {
 
 
     /**
@@ -44,7 +36,11 @@ public class RedisConfig extends CachingConfigurerSupport {
      * @return
      */
     @Bean
-    public CacheManager cacheManager() {
+    public CacheManager cacheManager(RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
+        return buildRedisCacheManager(redisTtlProperties, lettuceConnectionFactory);
+    }
+
+    public static CacheManager buildRedisCacheManager(RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
 

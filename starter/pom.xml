@@ -21,7 +21,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <example.spring.boot.starter.version>${version}</example.spring.boot.starter.version>
+        <example.spring.boot.starter.version>${project.version}</example.spring.boot.starter.version>
     </properties>
 
     <dependencyManagement>

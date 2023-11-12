@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +29,8 @@ import java.util.Arrays;
  *
  */
 @Profile("reference")
+@ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
 @Configuration
-@EnableCaching
 @EnableConfigurationProperties({RedisTtlProperties.class})
 public class RedisCacheCustomConfig extends CachingConfigurerSupport {
     @Bean
