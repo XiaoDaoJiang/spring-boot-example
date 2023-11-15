@@ -24,4 +24,10 @@
 * p6spy
 * tesseract-ocr
 * lock
+* test
+  * test aspect
+    * controller layer (mvc)
+    * repository layer (jpa)
+  * benchmark
+    * JMH
 * web

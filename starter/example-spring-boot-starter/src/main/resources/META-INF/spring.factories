@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.xiaodao.example.spring.boot.autoconfigure.ExampleAutoConfiguration
+com.xiaodao.spring.boot.autoconfigure.ExampleAutoConfiguration
