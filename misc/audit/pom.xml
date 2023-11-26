@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>audit</artifactId>
+    <description>biz data audit</description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
