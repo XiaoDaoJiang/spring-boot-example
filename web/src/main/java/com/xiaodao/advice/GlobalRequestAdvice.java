@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 
 @Slf4j
 @ControllerAdvice
-public class RequestAdvice implements RequestBodyAdvice {
+public class GlobalRequestAdvice implements RequestBodyAdvice {
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;

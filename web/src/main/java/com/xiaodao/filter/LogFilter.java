@@ -15,7 +15,27 @@ import java.io.IOException;
 public class LogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 处理请求前获取请求参数等
         log.info("LogFilter doFilterInternal");
-        filterChain.doFilter(request,response);
+        try {
+            filterChain.doFilter(request, response);
+            // TODO 正常执行，记录日志
+            log.info("正常执行，记录日志");
+        } catch (Exception exception) {
+            // TODO 异常执行，记录日志
+            log.error("异常执行，记录日志", exception);
+            throw exception;
+        }
+        // end
+        log.info("==========LogFilter End=========");
+    }
+
+
+    /**
+     * @return true: 不经过该过滤器，false 走过滤器
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return false;
     }
 }

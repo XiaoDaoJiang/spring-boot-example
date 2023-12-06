@@ -1,5 +1,6 @@
 package com.xiaodao.controller;
 
+import com.xiaodao.CommonResult;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +18,9 @@ public class HelloController {
     }
 
     @RequestMapping("get")
-    private String testGet(@RequestBody User user) {
+    private CommonResult<HelloController.User> testGet(@RequestBody User user) {
         log.info("hello get：{}", user);
-        return "hello get";
+        return CommonResult.success(user);
     }
 
     @Data

@@ -1,5 +1,6 @@
 package com.xiaodao.filter;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
@@ -8,7 +9,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @WebFilter(urlPatterns = "/*")
@@ -16,8 +16,16 @@ public class ReReadableFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         StreamRequestWrapper streamRequestWrapper = new StreamRequestWrapper((HttpServletRequest) request);
-        log.info(streamRequestWrapper.getReader().lines().collect(Collectors.joining()));
+        log.info("请求param map:{}", ServletUtil.getParamMap(streamRequestWrapper));
+        log.info("请求body:{}", ServletUtil.getBody(streamRequestWrapper));
+        // log.info("请求body:{}", streamRequestWrapper.getReader().lines().collect(Collectors.joining()));
         chain.doFilter(streamRequestWrapper, response);
+
+        // log.info("请求body:{}", request.getReader().lines().collect(Collectors.joining()));
+        // chain.doFilter(request, response);
+
+        //
+
     }
 
     private static class StreamRequestWrapper extends HttpServletRequestWrapper {

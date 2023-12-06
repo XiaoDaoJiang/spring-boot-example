@@ -1,3 +1,13 @@
+
+server:
+  servlet:
+    encoding:
+      enabled: true
+      # 已为默认
+      charset: utf-8
+      force: true
+
+
 logging:
   level:
     web: debug
