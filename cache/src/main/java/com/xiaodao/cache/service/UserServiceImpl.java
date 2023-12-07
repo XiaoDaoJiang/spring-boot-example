@@ -58,11 +58,10 @@ public class UserServiceImpl implements IUserService {
      *
      * @param id
      * @return
-     * @throws Exception
      */
     @Override
     @CacheEvict(key = "#id", beforeInvocation = true)
-    public void del(Long id) throws Exception {
+    public void del(Long id) {
         userRepository.deleteById(id);
     }
 
@@ -70,11 +69,10 @@ public class UserServiceImpl implements IUserService {
      * 删除所有缓存
      *
      * @return
-     * @throws Exception
      */
     @Override
     @CacheEvict(allEntries = true)
-    public int delAll() throws Exception {
+    public int delAll() {
         userRepository.deleteAll();
         return 1;
     }

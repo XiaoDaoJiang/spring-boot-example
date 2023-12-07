@@ -9,9 +9,9 @@ public interface IUserService {
 
     User save(User user);
 
-    void del(Long id) throws Exception;
+    void del(Long id) ;
 
-    int delAll() throws Exception;
+    int delAll() ;
 
     User update(User user);
 

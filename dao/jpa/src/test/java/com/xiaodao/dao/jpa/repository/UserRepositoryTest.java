@@ -2,8 +2,12 @@ package com.xiaodao.dao.jpa.repository;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.xiaodao.dao.jpa.SignListener;
 import com.xiaodao.dao.jpa.entity.User;
 import org.assertj.core.util.Lists;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,15 +39,15 @@ class UserRepositoryTest {
 
     @BeforeEach
     public void init() {
-        //        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-        //        sessionFactory.withOptions().interceptor(new SignInterceptor());
-        //         SessionFactoryImplementor sessionFactory = entityManagerFactory.unwrap(SessionFactoryImplementor.class);
-        //         final EventListenerRegistry service = sessionFactory
-        //                 .getServiceRegistry()
-        //                 .getService(EventListenerRegistry.class);
-        //         final SignListener signListener = new SignListener();
-        //         service.appendListeners(EventType.PRE_UPDATE, signListener);
-        //         service.appendListeners(EventType.PRE_INSERT, signListener);
+               // SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+               // sessionFactory.withOptions().interceptor(new SignInterceptor());
+                SessionFactoryImplementor sessionFactory = entityManagerFactory.unwrap(SessionFactoryImplementor.class);
+                final EventListenerRegistry service = sessionFactory
+                        .getServiceRegistry()
+                        .getService(EventListenerRegistry.class);
+                final SignListener signListener = new SignListener();
+                service.appendListeners(EventType.PRE_UPDATE, signListener);
+                service.appendListeners(EventType.PRE_INSERT, signListener);
     }
 
     @Test

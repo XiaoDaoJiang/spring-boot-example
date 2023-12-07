@@ -1,4 +1,33 @@
-## 通过文件配置的监听器或拦截器类都是通过反射实例化的无状态对象，不够灵活，不是Spring 容器中的bean;
+## Interceptors
+>通过文件配置的监听器或拦截器类都是通过反射实例化的无状态对象，不够灵活，不是Spring 容器中的bean;
+
+>hibernate 拦截器是固定sessionFactory上，或者对于特定session 指定，硬编码，
+```java
+SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+Session session = sessionFactory
+	.withOptions()
+	.interceptor(new LoggingInterceptor())
+	.openSession();
+session.getTransaction().begin();
+
+Customer customer = session.get(Customer.class, customerId);
+customer.setName("Mr. John Doe");
+//Entity Customer#1 changed from [John Doe, 0] to [Mr. John Doe, 0]
+
+session.getTransaction().commit();
+
+```
+----
+```java
+SessionFactory sessionFactory = new MetadataSources(new StandardServiceRegistryBuilder().build())
+	.addAnnotatedClass(Customer.class)
+	.getMetadataBuilder()
+	.build()
+	.getSessionFactoryBuilder()
+	.applyInterceptor(new LoggingInterceptor())
+	.build();
+```
+
 
 ## event listener
 hibernate 内置很多默认的事件类型及对应的监听器，每种事件有对应的监听器组
@@ -63,7 +92,14 @@ org.hibernate.internal.FastSessionServices 内部维护很多会话共享的缓�
 
 通过自定义实现各种实体类相关生命周期的监听器，并通过 EventListenerRegistryImpl 添加到对应的事件类型组下
 ```java
+EntityManagerFactory entityManagerFactory = entityManagerFactory();
+SessionFactoryImplementor sessionFactory = entityManagerFactory.unwrap( SessionFactoryImplementor.class );
+sessionFactory
+	.getServiceRegistry()
+	.getService( EventListenerRegistry.class )
+	.prependListeners( EventType.LOAD, new SecuredLoadEntityListener() );
 
+Customer customer = entityManager.find( Customer.class, customerId );
 ```
 
 ## 拦截器
@@ -95,8 +131,14 @@ public class DefaultPreLoadEventListener implements PreLoadEventListener {
 配置
 * org.hibernate.cfg.AvailableSettings.INTERCEPTOR
 * org.hibernate.cfg.AvailableSettings.SESSION_SCOPED_INTERCEPTOR
+```properties
+spring.jpa.properties.hibernate.session_factory.interceptor=xx.MyInterceptor
+spring.jpa.properties.hibernate.ejb.event.load=xx.MyLoadEventListener
+```
 
-## Jpa audit (mark entity create or modify and auditor)
+## Jpa Callbacks (mark entity create or modify and auditor)
+
+
 > 原理依赖 jpa 通过定义生命周期事件注解（@PrePersist、@PreUpdate）来指定回调方法（被事件注释的方法）
 > hibernate 定义各类具体事件（PostLoadEvent，PostInsertEvent），通过事件监听器（PostLoadEventListener、PostInsertEventListener），中的 CallbackRegistryImpl invoke 回调方法
 
@@ -223,3 +265,19 @@ public class AuditingEntityListener {
 }
 ```
 when listener callback AuditingEntityListener effect by AuditHandler
+
+#### more jpa 
+```java
+@Entity(name = "Publisher")
+@ExcludeDefaultListeners
+@ExcludeSuperclassListeners
+public static class Publisher extends BaseEntity {
+
+	@Id
+	private Long id;
+
+	private String name;
+
+	//Getters and setters omitted for brevity
+}
+```
