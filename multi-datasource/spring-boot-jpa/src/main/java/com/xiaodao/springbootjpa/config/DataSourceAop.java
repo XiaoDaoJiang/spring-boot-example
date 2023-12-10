@@ -1,8 +1,7 @@
 package com.xiaodao.springbootjpa.config;
 
-import com.xiaodao.springbootjpa.annotation.Master;
+import com.xiaodao.springbootjpa.annotation.DS;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -63,11 +62,25 @@ public class DataSourceAop {
 		MethodSignature signature = (MethodSignature) jp.getSignature();
 		String methodName = signature.getName();
 
-		if (signature.getMethod().isAnnotationPresent(Master.class) || !StringUtils.startsWithAny(methodName, "get", "select", "find")) {
+		// 适用于主/从库切换
+		/* if (signature.getMethod().isAnnotationPresent(Master.class) || !StringUtils.startsWithAny(methodName, "get", "select", "find")) {
 			DBContextHolder.master();
 		} else {
 			DBContextHolder.slave();
+		} */
+
+		// 异构多数据源
+		if (signature.getMethod().getDeclaringClass().isAnnotationPresent(DS.class)) {
+			DS ds = signature.getMethod().getDeclaringClass().getAnnotation(DS.class);
+			DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
 		}
+		if (signature.getMethod().isAnnotationPresent(DS.class)) {
+			DS ds = signature.getMethod().getAnnotation(DS.class);
+			DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
+		}
+
+		System.out.println("use datasource:" + DBContextHolder.get());
+
 	}
 
 	@After("execution(* com.xiaodao..service.impl.*.*(..))")

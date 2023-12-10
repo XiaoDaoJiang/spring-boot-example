@@ -12,6 +12,8 @@
         <module>mail</module>
         <module>audit</module>
         <module>validation</module>
+        <module>desensitization</module>
+        <module>translation</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
 

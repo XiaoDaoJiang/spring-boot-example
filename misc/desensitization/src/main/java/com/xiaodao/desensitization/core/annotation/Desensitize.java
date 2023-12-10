@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside // 此注解是其他所有 jackson 注解的元注解，打上了此注解的注解表明是 jackson 注解的一部分
 @JsonSerialize(using = StringDesensitizeSerializer.class) // 指定序列化器
-public @interface ValueDesensitize {
+public @interface Desensitize {
 
     /**
      * 脱敏处理器

@@ -23,7 +23,7 @@ public class MyDataSourcesConfiguration {
 	}
 
 	@Bean
-	@Primary
+	// @Primary
 	@ConfigurationProperties("app.datasource.first.configuration")
 	public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
 		return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
@@ -46,6 +46,7 @@ public class MyDataSourcesConfiguration {
 	public DataSource secondDataSource() {
 		return DataSourceBuilder.create().build();
 	}*/
+	@Primary
 	@Bean
 	public DataSource myRoutingDataSource(@Qualifier("firstDataSource") DataSource masterDataSource,
 										  @Qualifier("secondDataSource") DataSource slave1DataSource) {
@@ -64,5 +65,8 @@ enum DBTypeEnum {
 
 	MASTER, SLAVE1, SLAVE2;
 
+	public static DBTypeEnum getByKey(String dataSource) {
+		return valueOf(dataSource.toUpperCase());
+	}
 }
 

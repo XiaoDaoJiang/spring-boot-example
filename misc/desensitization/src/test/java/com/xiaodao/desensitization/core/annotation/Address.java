@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@ValueDesensitize(handler = AddressHandler.class)
+@Desensitize(handler = AddressHandler.class)
 public @interface Address {
 
     String replacer() default "*";

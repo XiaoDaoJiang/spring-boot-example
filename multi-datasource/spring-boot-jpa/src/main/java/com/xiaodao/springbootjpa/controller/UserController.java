@@ -1,7 +1,7 @@
 package com.xiaodao.springbootjpa.controller;
 
-import com.xiaodao.common.model.User;
-import com.xiaodao.service.UserService;
+import com.xiaodao.springbootjpa.model.User;
+import com.xiaodao.springbootjpa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +28,10 @@ public class UserController {
 	@PostMapping
 	public User saveUser(User user) {
 		return userService.saveUser(user);
+	}
+
+	@PutMapping
+	public User register(String username,Integer age) {
+		return userService.register(username, age);
 	}
 }

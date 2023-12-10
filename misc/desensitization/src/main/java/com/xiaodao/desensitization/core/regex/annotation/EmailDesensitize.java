@@ -1,7 +1,7 @@
 package com.xiaodao.desensitization.core.regex.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.xiaodao.desensitization.core.annotation.ValueDesensitize;
+import com.xiaodao.desensitization.core.annotation.Desensitize;
 import com.xiaodao.desensitization.core.regex.masker.EmailMasker;
 
 import java.lang.annotation.*;
@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@ValueDesensitize(handler = EmailMasker.class)
+@Desensitize(handler = EmailMasker.class)
 public @interface EmailDesensitize {
 
     /**

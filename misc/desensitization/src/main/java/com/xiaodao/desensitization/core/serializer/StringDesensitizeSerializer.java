@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.xiaodao.desensitization.core.annotation.ValueDesensitize;
+import com.xiaodao.desensitization.core.annotation.Desensitize;
 import com.xiaodao.desensitization.core.masker.Masker;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +40,7 @@ public class StringDesensitizeSerializer extends StdSerializer<String> implement
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) {
-        ValueDesensitize annotation = beanProperty.getAnnotation(ValueDesensitize.class);
+        Desensitize annotation = beanProperty.getAnnotation(Desensitize.class);
         if (annotation == null) {
             return this;
         }
@@ -61,13 +61,13 @@ public class StringDesensitizeSerializer extends StdSerializer<String> implement
         Field field = getField(gen);
 
         // 自定义处理器
-        ValueDesensitize[] annotations = AnnotationUtil.getCombinationAnnotations(field, ValueDesensitize.class);
+        Desensitize[] annotations = AnnotationUtil.getCombinationAnnotations(field, Desensitize.class);
         if (ArrayUtil.isEmpty(annotations)) {
             gen.writeString(value);
             return;
         }
         for (Annotation annotation : field.getAnnotations()) {
-            if (AnnotationUtil.hasAnnotation(annotation.annotationType(), ValueDesensitize.class)) {
+            if (AnnotationUtil.hasAnnotation(annotation.annotationType(), Desensitize.class)) {
                 value = this.masker.mask(value, annotation);
                 gen.writeString(value);
                 return;

@@ -1,17 +1,17 @@
 app:
   datasource:
     first:
-      url: "jdbc:mysql://localhost/first"
+      url: "jdbc:mysql://localhost/user_center"
       username: "root"
-      password: "root"
+      password: "2714@Jht"
       driver-class-name: com.mysql.cj.jdbc.Driver
       configuration:
         maximum-pool-size: 30
 
     second:
-      url: "jdbc:mysql://localhost/second"
+      url: "jdbc:mysql://localhost/account_center"
       username: "root"
-      password: "root"
+      password: "2714@Jht"
       max-total: 30
       driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -20,7 +20,12 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
 server:
   port: 8088
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

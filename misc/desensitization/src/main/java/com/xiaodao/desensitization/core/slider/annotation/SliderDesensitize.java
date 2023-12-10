@@ -1,7 +1,7 @@
 package com.xiaodao.desensitization.core.slider.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.xiaodao.desensitization.core.annotation.ValueDesensitize;
+import com.xiaodao.desensitization.core.annotation.Desensitize;
 import com.xiaodao.desensitization.core.slider.masker.DefaultSliderMasker;
 
 import java.lang.annotation.*;
@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@ValueDesensitize(handler = DefaultSliderMasker.class)
+@Desensitize(handler = DefaultSliderMasker.class)
 public @interface SliderDesensitize {
 
     /**
