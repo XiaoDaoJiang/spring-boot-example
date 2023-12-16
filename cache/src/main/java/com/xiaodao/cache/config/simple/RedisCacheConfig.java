@@ -1,16 +1,19 @@
-package com.xiaodao.cache.config;
+package com.xiaodao.cache.config.simple;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xiaodao.cache.config.RedisTtlProperties;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -24,6 +27,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 直接创建一个自定义 CacheManager，适用于简单自定义场景
+ */
+@Profile("simple")
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
 @EnableConfigurationProperties(RedisTtlProperties.class)
 @Configuration
@@ -36,11 +44,13 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
      * @return
      */
     @Bean
-    public CacheManager cacheManager(RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
-        return buildRedisCacheManager(redisTtlProperties, lettuceConnectionFactory);
+    public CacheManager cacheManager(
+            CacheProperties cacheProperties,
+            RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
+        return buildRedisCacheManager(cacheProperties,redisTtlProperties, lettuceConnectionFactory);
     }
 
-    public static CacheManager buildRedisCacheManager(RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
+    public static CacheManager buildRedisCacheManager(CacheProperties cacheProperties, RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
 
@@ -55,9 +65,10 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 // .entryTtl(Duration.ZERO)
 //                .entryTtl(Duration.ofSeconds(20))   //设置缓存失效时间
+                .entryTtl(cacheProperties.getRedis().getTimeToLive())
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
-                .disableCachingNullValues();
+                .prefixCacheNameWith(cacheProperties.getRedis().getKeyPrefix());
 
         // 自定义缓存失效时间
         Map<String, RedisCacheConfiguration> customCacheConfig = new HashMap<>();

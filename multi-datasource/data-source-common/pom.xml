@@ -36,13 +36,13 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-core</artifactId>
-            <version>3.4.3.4</version>
+            <version>${mybatis-plus-boot-starter.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.4.3.4</version>
+            <version>${mybatis-plus-boot-starter.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

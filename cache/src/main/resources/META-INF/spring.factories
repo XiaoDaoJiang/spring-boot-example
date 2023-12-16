@@ -1,0 +1,5 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.xiaodao.cache.config.composite.MultiLevelCompositeCacheConfig,\
+com.xiaodao.cache.config.composite.RedisCompositeCacheConfiguration,\
+com.xiaodao.cache.config.composite.CaffeineCompositeCacheConfiguration

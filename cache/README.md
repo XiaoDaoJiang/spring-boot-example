@@ -1,3 +1,4 @@
+## spring cache redis 序列化
 `GenericJackson2JsonRedisSerializer` 和 `Jackson2JsonRedisSerializer` 都是 Spring Data Redis 中用于序列化和反序列化对象到 Redis 的序列化器。
 
 1. `GenericJackson2JsonRedisSerializer`：
@@ -15,7 +16,13 @@
 
 选择使用哪种序列化器取决于你的具体需求。如果需要在 Redis 存储中存储多种类型的对象，并且希望能够正确地还原对象的类型，那么 `GenericJackson2JsonRedisSerializer` 是一个不错的选择。如果只需要处理特定的类类型，并且可以在反序列化时明确指定目标类型，那么 `Jackson2JsonRedisSerializer` 可能更适合。
 
-## 扩展 Spring Cache Redis
+## 扩展 Spring Cache
 * 替换默认 Cache Manager
 * 设置自定义 CacheConfiguration ，使用 RedisCacheManagerBuilderCustomizer
 两种方法都是设置对应 CacheName 的 CacheConfiguration 以实现Cache 的特定功能；
+* 扩展二级缓存（基于 CompositeCacheManager）
+  * caffeine
+  * redis
+* 扩展 @CacheXXX 注解
+  * 实现 cache Key 自定义生成
+  * 实现缓存过期时间

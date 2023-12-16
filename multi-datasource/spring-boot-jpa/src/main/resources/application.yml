@@ -3,7 +3,7 @@ app:
     first:
       url: "jdbc:mysql://localhost/user_center"
       username: "root"
-      password: "2714@Jht"
+      password: "1234"
       driver-class-name: com.mysql.cj.jdbc.Driver
       configuration:
         maximum-pool-size: 30
@@ -11,7 +11,7 @@ app:
     second:
       url: "jdbc:mysql://localhost/account_center"
       username: "root"
-      password: "2714@Jht"
+      password: "1234"
       max-total: 30
       driver-class-name: com.mysql.cj.jdbc.Driver
 

@@ -33,6 +33,8 @@
 # office
 * excel(导入异步处理，模板抽象（解析，翻译，格式校验），SPI解耦业务规则)
 # scheduler
+* timer task
+* ScheduledExecutorService
 * Spring Schedule
 * Quartz(cluster，dynamic job management,job listener)
   * dynamic job management
@@ -40,18 +42,22 @@
   * cluster
 * xxl-job
 # search engine
-* elasticsearch(索引生命周期管理，索引模板)
+* elasticsearch(索引生命周期管理，索引模板，已新增)
 # sharding
 * sharding-jdbc
 # transaction
 # misc
 * audit(业务审计日志)
+  * org.hibernate.Interceptor 
+  * org.hibernate.event PostInsertEventListener/PostUpdateEventListener
 * dictionary translate（字典翻译）
 * masking（脱敏）
 * tesseract-ocr(ocr识别及优化，提高精度)
   * tess4j
   * Linux install dependencies
   * performance
+  * compare other ocr(PaddleOCR) [https://blog.csdn.net/weixin_41021342/article/details/127203654]
+  
 * prevent-repeat-submit（防重复提交）
   * form token 校验
   * redisson lock 实现

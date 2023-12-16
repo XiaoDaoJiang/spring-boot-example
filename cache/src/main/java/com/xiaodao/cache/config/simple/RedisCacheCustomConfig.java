@@ -1,9 +1,12 @@
-package com.xiaodao.cache.config;
+package com.xiaodao.cache.config.simple;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xiaodao.cache.config.RedisTtlProperties;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,7 +15,7 @@ import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,10 +28,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * redis配置
+ * redis cacheManagerCustomizers 配置，适用于深度自定义，同时又保证原始默认配置的兜底，保证灵活性
  *
+ * @see org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
  */
-@Profile("reference")
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
 @Configuration
 @EnableConfigurationProperties({RedisTtlProperties.class})
@@ -62,8 +65,10 @@ public class RedisCacheCustomConfig extends CachingConfigurerSupport {
     public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
         CacheProperties.Redis redisProperties = cacheProperties.getRedis();
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+        // 缓存值 序列化与反序列化
         config = config.serializeValuesWith(SerializationPair.fromSerializer(this.getRedisSerializer()));
         if (redisProperties.getTimeToLive() != null) {
+            // 兜底默认过期时间
             config = config.entryTtl(redisProperties.getTimeToLive());
         }
         if (redisProperties.getKeyPrefix() != null) {
@@ -79,7 +84,7 @@ public class RedisCacheCustomConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * 自定义redis缓存名称过期时间
+     * 自定义redis缓存名称与过期时间
      *
      * @return RedisCacheManagerBuilderCustomizer
      */

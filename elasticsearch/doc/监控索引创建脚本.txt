@@ -1,0 +1,102 @@
+# 1、创建索引生命周期策略（用于滚动更新索引）
+# 请根据部署环境设置下面的滚动及删除策略
+PUT _ilm/policy/platform_monitor_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "rollover": {
+            "max_age": "15d"
+          },
+          "set_priority": {
+            "priority": 100
+          }
+        }
+      },
+      "delete": {
+        "min_age": "30d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+
+# 2、创建索引模板（定义服务监控索引数据结构）
+# 分片等信息需要根据es集群配置调整
+PUT _template/platform_monitor_service_health_check_template
+{
+  "index_patterns": [
+    "platform_monitor_service_health_check*"
+  ],
+  "settings": {
+    "index": {
+      "number_of_shards": "1",
+      "number_of_replicas": "0",
+      "lifecycle": {
+        "name": "platform_monitor_policy",
+        "rollover_alias": "platform_monitor_service_health_check"
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "registerId": {
+        "type": "long"
+      },
+      "serviceGroup": {
+        "type": "keyword"
+      },
+      "serviceCode": {
+        "type": "keyword"
+      },
+      "serviceName": {
+        "type": "keyword"
+      },
+      "serviceHost": {
+        "type": "keyword"
+      },
+      "serviceType": {
+        "type": "keyword"
+      },
+      "serviceTypeName": {
+        "type": "keyword"
+      },
+      "checkTime": {
+        "type": "date",
+        "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+      },
+      "createdTime": {
+        "type": "date",
+        "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+      },
+      "costTimeMs": {
+        "type": "long"
+      },
+      "healthStatus": {
+        "type": "keyword"
+      },
+      "healthInfo": {
+        "type": "text"
+      },
+      "healthStatusName": {
+       "type": "keyword"
+      }
+    }
+  }
+}
+
+# 3、创建第一片索引
+# PUT /platform_monitor_service_health_check-{now/d}-000001 需要用编码处理特殊字符
+# 别名没在template中设置的原因是避免和生命周期滚动别名冲突
+PUT /%3Cplatform_monitor_service_health_check-%7Bnow%2Fd%7D-000001%3E
+{
+  "aliases": {
+    "platform_monitor_service_health_check": {
+        "is_write_index": true
+    }
+  }
+}

@@ -16,12 +16,19 @@ spring:
       hibernate:
         format_sql: true
     database: h2
+    open-in-view: false
+  data:
+    redis:
+      repositories:
+        enabled: false
   cache:
-    type: redis
+#    type: caffeine
     time-to-lives:
       user: 10m
     redis:
-      key-prefix: "cache:"
+      key-prefix: "redis:cache:"
+#    composite:
+#      cache-type: redis
   redis:
     host: localhost
     port: 6379
