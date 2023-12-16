@@ -28,4 +28,7 @@ server:
 
 logging:
   level:
+    com.xiaodao: trace
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+    org.hibernate.engine.transaction: DEBUG

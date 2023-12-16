@@ -1,3 +1,13 @@
+## hibernate
+### 如何执行与数据库交互
+1. 初始化 EntityManagerFactory 并指定了 DataSource(LocalContainerEntityManagerFactoryBean) 时会初始化 SessionFactoryImpl 并使用 中的 FastSessionServices 缓存了 ConnectionProvider
+2. 入口为 SessionFactory 的 openSession 方法，返回 SessionImpl 实例(SessionImpl 实现了 Session 接口，Session 接口定义了各种CRUD方法)
+3. 执行
+   * 查询通过 Loader 获取 session 中的 JdbcCoordinator[Connection] 构建查询使用的 PrepareStatement 并执行，返回 ResultSet
+   * 增删改通过 ActionQueue 将操作放入队列中，等待 flush 时通过 AbstractEntityPersister(实现 EntityPersister) 使用 JdbcCoordinator[Connection] 生成对应的 PreparedStatement 并最终通过 jdbc 执行
+
+
+
 ## Interceptors
 >通过文件配置的监听器或拦截器类都是通过反射实例化的无状态对象，不够灵活，不是Spring 容器中的bean;
 

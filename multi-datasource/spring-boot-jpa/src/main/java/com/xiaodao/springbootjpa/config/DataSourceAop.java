@@ -6,12 +6,16 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
 @Component
+// 保证该AOP在@Transactional之前执行
+@Order(Integer.MIN_VALUE + 10)
 public class DataSourceAop {
 
 
@@ -54,37 +58,41 @@ public class DataSourceAop {
 	}*/
 
 
-	/**
-	 * 另一种写法：if...else... 判断哪些需要读从数据库，其余的走主数据库
-	 */
-	@Before("execution(* com.xiaodao..service.impl.*.*(..))")
-	public void before(JoinPoint jp) {
-		MethodSignature signature = (MethodSignature) jp.getSignature();
-		String methodName = signature.getName();
+    @Pointcut("execution(* com.xiaodao..service.*.*(..))")
+    public void serviceLayer() {
+    }
 
-		// 适用于主/从库切换
+    /**
+     * 另一种写法：if...else... 判断哪些需要读从数据库，其余的走主数据库
+     */
+    @Before("serviceLayer()")
+    public void before(JoinPoint jp) {
+        MethodSignature signature = (MethodSignature) jp.getSignature();
+        String methodName = signature.getName();
+
+        // 适用于主/从库切换
 		/* if (signature.getMethod().isAnnotationPresent(Master.class) || !StringUtils.startsWithAny(methodName, "get", "select", "find")) {
 			DBContextHolder.master();
 		} else {
 			DBContextHolder.slave();
 		} */
 
-		// 异构多数据源
-		if (signature.getMethod().getDeclaringClass().isAnnotationPresent(DS.class)) {
-			DS ds = signature.getMethod().getDeclaringClass().getAnnotation(DS.class);
-			DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
-		}
-		if (signature.getMethod().isAnnotationPresent(DS.class)) {
-			DS ds = signature.getMethod().getAnnotation(DS.class);
-			DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
-		}
+        // 异构多数据源
+        if (signature.getMethod().getDeclaringClass().isAnnotationPresent(DS.class)) {
+            DS ds = signature.getMethod().getDeclaringClass().getAnnotation(DS.class);
+            DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
+        }
+        if (signature.getMethod().isAnnotationPresent(DS.class)) {
+            DS ds = signature.getMethod().getAnnotation(DS.class);
+            DBContextHolder.set(DBTypeEnum.getByKey(ds.value()));
+        }
 
-		System.out.println("use datasource:" + DBContextHolder.get());
+        System.out.println("use datasource:" + DBContextHolder.get());
 
-	}
+    }
 
-	@After("execution(* com.xiaodao..service.impl.*.*(..))")
-	public void after(JoinPoint jp) {
-		DBContextHolder.clearDataSourceKey();
-	}
+    @After("serviceLayer()")
+    public void after(JoinPoint jp) {
+        DBContextHolder.clearDataSourceKey();
+    }
 }

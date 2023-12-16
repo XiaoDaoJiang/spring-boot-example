@@ -22,45 +22,45 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	@Autowired
-	private AccountService accountService;
+    @Autowired
+    private AccountService accountService;
 
-	public UserServiceImpl(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-	@Override
-	public List<User> findUserByAgeWithin(Integer maxAge) {
-		return userRepository.findByAgeLessThan(maxAge);
-	}
+    @Override
+    public List<User> findUserByAgeWithin(Integer maxAge) {
+        return userRepository.findByAgeLessThan(maxAge);
+    }
 
-	@Override
-	public User saveUser(User user) {
-		userRepository.save(user);
-		return user;
-	}
+    @Override
+    public User saveUser(User user) {
+        userRepository.save(user);
+        return user;
+    }
 
-	@Override
-	public boolean checkUserExist(User user) {
-		return false;
-	}
+    @Override
+    public boolean checkUserExist(User user) {
+        return false;
+    }
 
-	@Transactional
-	@Override
-	public User register(String username, Integer age) {
-		final User user = new User();
-		user.setName(username);
-		user.setAge(age);
+    @Transactional
+    @Override
+    public User register(String username, Integer age) {
+        final User user = new User();
+        user.setName(username);
+        user.setAge(age);
 
-		if (accountService.checkExist(username)) {
-			throw new RuntimeException("账户已存在");
-		}
+        if (accountService.checkExist(username)) {
+            throw new RuntimeException("账户已存在");
+        }
 
-		userRepository.save(user);
-		accountService.create(username);
+        userRepository.save(user);
+        accountService.create(username);
 
-		return user;
-	}
+        return user;
+    }
 }
