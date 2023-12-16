@@ -26,18 +26,32 @@ public class ServiceLayerTransactionLogAspect {
     @Before("serviceLayer()")
     public void beforeServiceLayer(JoinPoint joinPoint) {
         final DefaultTransactionStatus transactionStatus = (DefaultTransactionStatus) TransactionAspectSupport.currentTransactionStatus();
-        log.trace("curr method:{}, tx:{},\n" +
-                        "hasSavepoint={}\n" +
-                        "isNewTransaction={}\n" +
-                        "isRollbackOnly={}\n" +
-                        "isCompleted={}\n" +
-                        "transaction={}\n" +
-                        "suspended resource={}\n", joinPoint.getSignature(),
-                TransactionSynchronizationManager.getCurrentTransactionName(),
-                transactionStatus.hasSavepoint(), transactionStatus.isNewTransaction(),
-                transactionStatus.isRollbackOnly(), transactionStatus.isCompleted(),
-                transactionStatus.getTransaction(),
-                transactionStatus.getSuspendedResources());
+        if (transactionStatus.hasTransaction()) {
+            log.trace("curr method:{}, tx:{},\n" +
+                            "hasSavepoint={}\n" +
+                            "isNewTransaction={}\n" +
+                            "isRollbackOnly={}\n" +
+                            "isCompleted={}\n" +
+                            "transaction={}\n" +
+                            "suspended resource={}\n", joinPoint.getSignature(),
+                    TransactionSynchronizationManager.getCurrentTransactionName(),
+                    transactionStatus.hasSavepoint(), transactionStatus.isNewTransaction(),
+                    transactionStatus.isRollbackOnly(), transactionStatus.isCompleted(),
+                    transactionStatus.getTransaction(),
+                    transactionStatus.getSuspendedResources());
+        } else {
+            log.trace("curr method:{}, No transaction active:{},\n" +
+                            "hasSavepoint={}\n" +
+                            "isNewTransaction={}\n" +
+                            "isRollbackOnly={}\n" +
+                            "isCompleted={}\n" +
+                            "suspended resource={}\n", joinPoint.getSignature(),
+                    TransactionSynchronizationManager.getCurrentTransactionName(),
+                    transactionStatus.hasSavepoint(), transactionStatus.isNewTransaction(),
+                    transactionStatus.isRollbackOnly(), transactionStatus.isCompleted(),
+                    transactionStatus.getSuspendedResources());
+        }
+
     }
 
 
