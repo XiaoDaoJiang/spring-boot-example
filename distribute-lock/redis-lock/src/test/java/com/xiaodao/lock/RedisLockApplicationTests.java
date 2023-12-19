@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Duration;
+
 @SpringBootTest
 // @SpringBootTest(classes = RedisLockApplication.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 // @DataRedisTest
@@ -15,6 +17,6 @@ public class RedisLockApplicationTests {
 
     @Test
     public void testLock() {
-        redisSimpleLock.lock("testLock");
+        redisSimpleLock.lock("testLock", Duration.ofSeconds(300));
     }
 }
