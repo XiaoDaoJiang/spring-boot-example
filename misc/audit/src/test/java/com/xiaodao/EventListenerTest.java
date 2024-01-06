@@ -1,4 +1,4 @@
-package com.xiaodao.audit;
+package com.xiaodao;
 
 import com.xiaodao.common.entity.User;
 import com.xiaodao.common.respository.UserRepository;
@@ -30,6 +30,12 @@ class EventListenerTest {
 
     @Test
     void onPostUpdate() {
+        userRepository.findById(8L).ifPresent(user -> {
+            user.setName("jacky");
+            user.setAge(32);
+            user.setEmail("xiaodao");
+            userRepository.save(user);
+        });
     }
 
 }

@@ -39,7 +39,7 @@ SessionFactory sessionFactory = new MetadataSources(new StandardServiceRegistryB
 ```
 
 
-## event listener
+## Event Listener
 hibernate 内置很多默认的事件类型及对应的监听器，每种事件有对应的监听器组
 ```java
 public final class EventType<T> {
@@ -113,7 +113,7 @@ Customer customer = entityManager.find( Customer.class, customerId );
 ```
 
 ## 拦截器
-通过事件监听器 触发 会话的拦截器
+> 最终是通过事件监听器触发会话的拦截器
 
 ```java
 public class DefaultPreLoadEventListener implements PreLoadEventListener {
@@ -148,11 +148,10 @@ spring.jpa.properties.hibernate.ejb.event.load=xx.MyLoadEventListener
 
 ## Jpa Callbacks (mark entity create or modify and auditor)
 
-
 > 原理依赖 jpa 通过定义生命周期事件注解（@PrePersist、@PreUpdate）来指定回调方法（被事件注释的方法）
-> hibernate 定义各类具体事件（PostLoadEvent，PostInsertEvent），通过事件监听器（PostLoadEventListener、PostInsertEventListener），中的 CallbackRegistryImpl invoke 回调方法
+> hibernate 定义各类具体事件（PostLoadEvent，PostInsertEvent），通过自带的默认事件监听器（PostLoadEventListener：DefaultPostLoadEventListener、PostInsertEventListener）中的 CallbackRegistryImpl invoke 回调方法
 
-@EnableJpaAuditing
+@EnableJpaAuditing + @EntityListeners(AuditingEntityListener.class)
 -> register jpaAuditingHandler:
 ```java
 public class AuditingHandler extends AuditingHandlerSupport implements InitializingBean {
@@ -162,9 +161,13 @@ public class IsNewAwareAuditingHandler extends AuditingHandler{
     
 }
 ```
+
+CallbacksFactory#buildCallbackRegistry-> buildCallbacks() ->registerCallbacks()
+会分别从 PersistentClass 的类或者父类（被@EntityListeners 注解） 、属性（带有@PrePersist 、@PreUpdate） 生成 CallbackDefinitions，并以此后构建回调
 在 实体类中带事件注解方法或者指定事件监听器定义带注解方法
 > 为什么这种回调能够拿到“侦听器”中注入的变量signatureService
-> EventEngine 初始化jpaCallback 时会传入 ManagedBeanRegistry，相当于从Spring 容器中获取到了bean，目标回调方法生成 ListenerCallback，自然能够访问
+> EventEngine 初始化jpaCallback 时会传入 ManagedBeanRegistry，相当于从Spring 容器中获取到了 bean，目标回调方法调用的是Bean 的方法 
+> 这样的 ListenerCallback，自然能够访问
 ```java
 /**
  * 一个监听器类带有注解方法，这个方法就是会被抽象为一个回调callbackMethod 
@@ -199,25 +202,31 @@ public class MySignEntityListener {
 ```
 
 -> @entity or @MappedSuperclass exist @EntityListeners(AuditingEntityListener.class)
+
 ```java
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public abstract class BaseAuditEntity {
+   @MappedSuperclass
+   @EntityListeners(AuditingEntityListener.class)
+   public abstract class BaseAuditEntity {
+   
+       @CreatedBy
+       public Long createBy;
+   
+       @CreatedDate
+       private LocalDateTime createTime;
+   
+       @LastModifiedBy
+       private Long modifyBy;
+   
+       @LastModifiedDate
+       private LocalDateTime modifyTime;
+   
+   }
+```
 
-    @CreatedBy
-    public Long createBy;
+> hibernate 回调触发 AuditingEntityListener的 @PrePersist @PreUpdate 方法，
+> 最终由 org.springframework.data.auditing.AuditingHandler 对相应的属性进行 setProperty，完成Spring Data JPA 的审计功能
 
-    @CreatedDate
-    private LocalDateTime createTime;
-
-    @LastModifiedBy
-    private Long modifyBy;
-
-    @LastModifiedDate
-    private LocalDateTime modifyTime;
-
-}
-
+```java
 public class AuditingEntityListener {
 
     private @Nullable ObjectFactory<AuditingHandler> handler;

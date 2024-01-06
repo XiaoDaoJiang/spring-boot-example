@@ -43,6 +43,7 @@ public class AuditEventListenerRegistry implements InitializingBean{
         eventListenerRegistry.appendListeners(EventType.MERGE, auditEventListener);
 
 
+        eventListenerRegistry.appendListeners(EventType.POST_UPDATE, postEventListener);
         eventListenerRegistry.appendListeners(EventType.POST_DELETE, postEventListener);
         eventListenerRegistry.appendListeners(EventType.POST_COMMIT_DELETE, postCommitEventListener);
 

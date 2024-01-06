@@ -10,6 +10,10 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * 好像并没有生效
+ */
 @Component
 public class AuditIntegrator implements Integrator {
 

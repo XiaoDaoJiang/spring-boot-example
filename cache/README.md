@@ -1,3 +1,35 @@
+## caffeine
+https://github.com/ben-manes/caffeine
+### 简单介绍
+caffeine 是一个高性能的本地缓存库， 使用上是受 Guava Cache API 启发，借鉴了 GuavaCache的设计
+### 特性
+1. 自动加载缓存条目（支持异步）
+2. 基于容量大小淘汰
+3. 基于时间（上次写入或上次访问,last write or last access）淘汰
+4. 缓存的Key可以包装为弱引用
+5. 缓存的Value可以包装为弱引用或软引用 
+6. 异步刷新（当访问的缓存过期时）
+7. 缓存条目过期的通知
+8. 传播到外部资源的写入 （write propagated/compute）
+9. 统计信息（访问缓存统计指标信息）
+
+## 淘汰算法 W-TinyLFU
+1. 通过 Count-min Sketch 降低频率信息的内存消耗
+2. 维护一个PK机制保障新上的热点数据能够缓存
+
+
+LRU（Window Deque） | Segment-LRU
+
+Segment-LRU 分为两部分，一部分为 Protected Deque，一部分为 Probation Deque。
+数据首先放入 Window Deque，当 Window Deque 满了之后，会将数据放入 Probation Deque，
+当数据再次访问时，会将数据从 Probation Deque 提升到 Protected Deque，当 Protected Deque 满了之后，会有数据降级到 Probation Deque。
+数据淘汰时从 Probation Deque 中淘汰，
+具体淘汰机制：取ProbationDeque 中的队首和队尾进行 PK，队首数据是最先进入队列的，称为受害者，队尾的数据称为攻击者，比较两者 频率大小，大胜小汰。
+
+
+## 高性能读写
+
+
 ## spring cache redis 序列化
 `GenericJackson2JsonRedisSerializer` 和 `Jackson2JsonRedisSerializer` 都是 Spring Data Redis 中用于序列化和反序列化对象到 Redis 的序列化器。
 
