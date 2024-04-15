@@ -3,7 +3,33 @@ spring:
     addresses: 127.0.0.1:5672,127.0.0.1:5673,127.0.0.1:5674
     username: guest
     password: guest
+    # 已被弃用
+    # publisher-confirms: true
+    # simple：同步等待confirm结果，直到超时
+    # correlated：异步回调，定义ConfirmCallback，MQ返回结果时会回调这个ConfirmCallback
+    publisher-confirm-type: correlated
+    # 开启publish-return功能，同样是基于callback机制，不过是定义ReturnCallback
+    publisher-returns: true
+    # 消费者相关配置
+    listener:
+      simple:
+        # consumer confirm：消费者确认机制
+        acknowledge-mode: auto
+        # 本地消费重试（避免消息重新入队列）
+        retry:
+          enabled: true
+          initial-interval: 1000 # 初识的失败等待时长为1秒
+          multiplier: 1 # 失败的等待时长倍数，下次等待时长 = multiplier * last-interval
+          max-attempts: 3 # 最大重试次数
+          stateless: true # true无状态；false有状态。如果业务中包含事务，这里改为false
+        # 默认情况下，被拒绝的交付是否重新排队。(默认为true)
+        default-requeue-rejected: false
     template:
+      # 生产者本地重试
       retry:
-        enabled: true
-        initial-interval: "2s"
+        enabled: true # 开启失败重试
+        initial-interval: "2s" # 初识的失败等待时长为2秒
+        multiplier: 1 # 失败的等待时长倍数，下次等待时长 = multiplier * last-interval
+        max-attempts: 3 # 最大重试次数
+      # 定义消息路由失败时的策略。true，则调用ReturnCallback；false：则直接丢弃消息
+      mandatory: true
