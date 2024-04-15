@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaodao.mybatismultidatasource.mapper.AccountMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiaodao.common.model.Account">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="user_id" column="user_id" jdbcType="INTEGER"/>
+            <result property="user_account" column="user_account" jdbcType="VARCHAR"/>
+            <result property="registed_date" column="registed_date" jdbcType="TIMESTAMP"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,user_account,
+        registed_date,role
+    </sql>
+</mapper>
