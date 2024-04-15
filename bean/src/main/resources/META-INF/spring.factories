@@ -1,0 +1,1 @@
+com.xiaodao.bean.spi.NameProvider=com.xiaodao.bean.spi.MyNameProviderImpl
