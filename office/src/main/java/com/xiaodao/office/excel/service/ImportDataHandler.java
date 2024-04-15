@@ -40,7 +40,8 @@ public class ImportDataHandler implements Handler<UploadData> {
                     taskHandler.process(dataList, dic);
                     return dataList;
                 }
-            }); futureList.add(future);
+            });
+            futureList.add(future);
         } return futureList;
     }
 
