@@ -13,7 +13,7 @@ management:
       show-details: always
       show-components: always
       group:
-#        /actuator/health/custom
+        # 直接访问获取分组custom["my",...]健康信息：/actuator/health/custom
         custom:
           include: "my"
   health:
