@@ -50,14 +50,14 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--<dependency>
+            <!-- <dependency>
                 &lt;!&ndash; Import dependency management from Spring Boot &ndash;&gt;
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.5.5</version>
+                <version>2.6.4</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>-->
+            </dependency> -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
