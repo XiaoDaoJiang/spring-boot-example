@@ -1,5 +1,6 @@
 package com.xiaodao.cache.service;
 
+import com.xiaodao.cache.CacheableWithTTL;
 import com.xiaodao.common.entity.User;
 import com.xiaodao.common.respository.UserRepository;
 import com.xiaodao.common.service.IUserService;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//这个注解表示类中共同放入到 user 模块中
+// 这个注解表示类中共同放入到 user 模块中
 @CacheConfig(cacheNames = "user")
 @Service
 public class UserServiceImpl implements IUserService {
@@ -27,7 +28,8 @@ public class UserServiceImpl implements IUserService {
      * 所以@Cacheable 不能使用result
      */
     @Override
-    @Cacheable(key = "#root.methodName")
+    @Cacheable(key = "#root.methodName+'#TTL:PT200S'")
+    // @CacheableWithTTL(ttl = 300)
     public List<User> list() {
         return userRepository.findAll();
     }

@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
+
+/**
+ * cacheType - cacheConfiguration mapping
+ */
 public class CompositeCacheConfigurations {
 
 
@@ -15,6 +19,7 @@ public class CompositeCacheConfigurations {
         Map<CompositeCacheType, String> mappings = new EnumMap<>(CompositeCacheType.class);
         mappings.put(CompositeCacheType.REDIS, RedisCompositeCacheConfiguration.class.getName());
         mappings.put(CompositeCacheType.CAFFEINE, CaffeineCompositeCacheConfiguration.class.getName());
+        mappings.put(CompositeCacheType.NONE, NoOpCacheConfiguration.class.getName());
         MAPPINGS = Collections.unmodifiableMap(mappings);
     }
 

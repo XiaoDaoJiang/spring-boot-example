@@ -3,37 +3,81 @@ package com.xiaodao.cache.config.composite;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xiaodao.cache.CacheableWithTTL;
+import com.xiaodao.cache.CustomRedisCacheManager;
 import com.xiaodao.cache.config.RedisTtlProperties;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.redis.cache.BatchStrategies;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
 
 /**
+ * 替换 RedisCacheConfiguration 默认配置
  * redis cacheManagerCustomizers 配置，适用于深度自定义，同时又保证原始默认配置的兜底，保证灵活性
  *
- * @see org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
+ * @link org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
  */
-@Configuration
-@EnableConfigurationProperties({RedisTtlProperties.class})
+// @Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(RedisConnectionFactory.class)
+@AutoConfigureAfter(RedisAutoConfiguration.class)
+@ConditionalOnBean(RedisConnectionFactory.class)
+@ConditionalOnMissingBean(RedisCacheManager.class)
 @Conditional(CompositeCacheCondition.class)
+@EnableConfigurationProperties({RedisTtlProperties.class})
 public class RedisCompositeCacheConfiguration extends CachingConfigurerSupport {
+
+
+    @Bean
+    RedisCacheManager redisCacheManager(CacheProperties cacheProperties, CacheManagerCustomizers cacheManagerCustomizers,
+                                        ObjectProvider<RedisCacheManagerBuilderCustomizer> redisCacheManagerBuilderCustomizers,
+                                        RedisConnectionFactory redisConnectionFactory) {
+        final RedisCacheConfiguration defaultCacheConfiguration = redisCacheConfiguration(cacheProperties);
+        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(
+                defaultCacheConfiguration);
+        List<String> cacheNames = cacheProperties.getCacheNames();
+        if (!cacheNames.isEmpty()) {
+            builder.initialCacheNames(new LinkedHashSet<>(cacheNames));
+        }
+        if (cacheProperties.getRedis().isEnableStatistics()) {
+            builder.enableStatistics();
+        }
+
+        // 定制调整 cacheName ttl
+        redisCacheManagerBuilderCustomizers.orderedStream().forEach((customizer) -> customizer.customize(builder));
+        final RedisCacheManager redisCacheManager = builder.build();
+
+        final RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory, BatchStrategies.scan(1000));
+        return cacheManagerCustomizers.customize(new CustomRedisCacheManager(redisCacheWriter, defaultCacheConfiguration,
+                redisCacheManager.getCacheConfigurations(), true));
+    }
 
 
     /**
@@ -87,9 +131,9 @@ public class RedisCompositeCacheConfiguration extends CachingConfigurerSupport {
      * @return 结果
      */
     @Override
-    @Bean("redisKeyGenerator")
+    @Bean("redisTTLKeyGenerator")
     public KeyGenerator keyGenerator() {
-        return new RedisKeyGenerator();
+        return new RedisTTLKeyGenerator();
     }
 
     @SuppressWarnings(value = {"unchecked", "rawtypes"})
@@ -104,11 +148,8 @@ public class RedisCompositeCacheConfiguration extends CachingConfigurerSupport {
 
     /**
      * Redis Key 生成策略
-     *
-     * @author jonk
-     * @date 2022/12/26 23:42
      */
-    public static class RedisKeyGenerator implements KeyGenerator {
+    public static class RedisTTLKeyGenerator implements KeyGenerator {
         /**
          * Generate a key for the given method and its parameters.
          *
@@ -119,11 +160,53 @@ public class RedisCompositeCacheConfiguration extends CachingConfigurerSupport {
          */
         @Override
         public Object generate(Object target, Method method, Object... params) {
-            return String.format("%s:%s:%s",
+            final String key = String.format("%s:%s:%s",
                     method.getDeclaringClass().getSimpleName(),
                     method.getName(),
-                    StringUtils.joinWith("_", params)
-            );
+                    StringUtils.joinWith("_", params));
+            final CacheableWithTTL annotation = AnnotationUtils.getAnnotation(method, CacheableWithTTL.class);
+            if (annotation != null) {
+                return new TTLKey(key, Duration.of(annotation.ttl(), annotation.unit()));
+            }
+            return new TTLKey(key);
         }
     }
+
+    @Getter
+    public static class TTLKey {
+        private final String key;
+
+        private Duration ttl = Duration.ZERO;
+
+        public TTLKey(String key, Duration ttl) {
+            this.key = key;
+            this.ttl = ttl;
+        }
+
+        public TTLKey(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return key;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            TTLKey ttlKey = (TTLKey) o;
+
+            return Objects.equals(key, ttlKey.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return key != null ? key.hashCode() : 0;
+        }
+    }
+
+
 }

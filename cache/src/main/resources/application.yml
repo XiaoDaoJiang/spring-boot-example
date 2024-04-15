@@ -2,12 +2,15 @@ server:
   port: 8082
 
 spring:
+  profiles:
+    #  单缓存管理器
+    active: cache-alone
   datasource:
     url: jdbc:h2:mem:TEST;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:
-#    url: jdbc:h2:./db/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+  #    url: jdbc:h2:./db/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,13 +25,14 @@ spring:
       repositories:
         enabled: false
   cache:
-#    type: caffeine
-    time-to-lives:
-      user: 10m
+    type: none
+#    time-to-lives:
+#      user: 10m
     redis:
       key-prefix: "redis:cache:"
-#    composite:
-#      cache-type: redis
+    composite:
+      enabled: true
+      cache-type: redis
   redis:
     host: localhost
     port: 6379
@@ -43,3 +47,9 @@ spring:
     init:
       schema-locations: classpath:db/schema-h2.sql
       data-locations: classpath:db/data-h2.sql
+
+
+logging:
+  level:
+    org.springframework.cache.interceptor.CacheAspectSupport: trace
+debug: true

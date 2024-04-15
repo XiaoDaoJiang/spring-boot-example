@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -32,6 +33,7 @@ import java.util.Arrays;
  *
  * @see org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
  */
+@Profile("simple")
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
 @Configuration
 @EnableConfigurationProperties({RedisTtlProperties.class})
