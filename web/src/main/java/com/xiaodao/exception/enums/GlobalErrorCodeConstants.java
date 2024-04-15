@@ -39,4 +39,7 @@ public interface GlobalErrorCodeConstants {
 
     ErrorCode UNKNOWN = new ErrorCode(999, "未知错误");
 
+    ErrorCode ASYNC_TIME_OUT = new ErrorCode(1000, "异步请求处理超时");
+
+
 }

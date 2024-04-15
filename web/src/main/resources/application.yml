@@ -1,4 +1,3 @@
-
 server:
   servlet:
     encoding:
@@ -11,4 +10,5 @@ server:
 logging:
   level:
     web: debug
+    com.xiaodao.filter.contentcache.CachingRequestLogFilter: debug
 #    org.springframework.web.filter.GenericFilterBean: debug

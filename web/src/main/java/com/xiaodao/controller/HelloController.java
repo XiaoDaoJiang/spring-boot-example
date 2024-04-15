@@ -13,8 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @GetMapping("hello")
-    public String hello() {
-        return "hello world";
+    public CommonResult<String> hello() {
+        return CommonResult.success("hello world");
+    }
+
+
+    @RequestMapping("helloForm")
+    public CommonResult<User> helloForm(User user) {
+        return CommonResult.success(user);
     }
 
     @RequestMapping("get")
@@ -24,7 +30,7 @@ public class HelloController {
     }
 
     @Data
-    static class User {
+    public static class User {
         private String name;
     }
 }

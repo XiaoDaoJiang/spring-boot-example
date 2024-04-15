@@ -2,16 +2,15 @@ package com.xiaodao.intercepter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Component
-public class LogInterceptor implements HandlerInterceptor {
+public class LogInterceptor implements AsyncHandlerInterceptor {
 
 
     @Override
@@ -27,10 +26,16 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        final ServletInputStream inputStream = request.getInputStream();
-        log.info("{}", inputStream.isFinished());
-        log.info("{}", inputStream.isReady());
-        inputStream.read();
+        // final ServletInputStream inputStream = request.getInputStream();
+        // log.info("{}", inputStream.isFinished());
+        // log.info("{}", inputStream.isReady());
+        // inputStream.read();
         log.info("HandlerInterceptor afterCompletion");
+    }
+
+
+    @Override
+    public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("HandlerInterceptor afterConcurrentHandlingStarted");
     }
 }

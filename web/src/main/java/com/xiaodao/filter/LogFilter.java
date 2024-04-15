@@ -4,22 +4,20 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.xiaodao.util.TraceIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 @Slf4j
-@Order(-1)
-@WebFilter(urlPatterns = "/*", asyncSupported = true)
+// @Order(-1)
+// @WebFilter(urlPatterns = "/*", asyncSupported = true)
 public class LogFilter extends OncePerRequestFilter {
 
     /**
@@ -28,7 +26,7 @@ public class LogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 处理请求前获取请求参数等
-        TraceIdUtil.createTraceId();
+        TraceIdUtil.createTraceIdNX(request);
         log.info("LogFilter doFilterInternal");
         final HttpServletRequestWrapper wrapper = new StreamRequestWrapper(request);
         log.info("请求param map:{}", ServletUtil.getParamMap(wrapper));

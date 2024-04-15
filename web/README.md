@@ -1,6 +1,6 @@
 ### 拦截请求与响应完成日志记录
 1. 不能重复多次读取 request InputStream，包装器模式，替换带缓存的 HttpServletRequestWrapper
-   * Spring Web 实现 ContentCachingRequestWrapper
+   * Spring Web 实现 ContentCachingRequestWrapper（body中的数据只有读出之后才会缓存，只能在后置处理中打印流中的数据）、ContentCachingResponseWrapper
    * 自定义 [CacheRequestBodyWrapper.java](src%2Fmain%2Fjava%2Fcom%2Fxiaodao%2Ffilter%2Fdemo%2FCacheRequestBodyWrapper.java)
 2. 拦截请求与响应
    * 基于过滤器（OncePerRequestFilter）
@@ -33,6 +33,15 @@
 
      ```
 
+## 主要难点
+1. request、response 需要包装为带缓冲，能够多次读取
+2. 判断拦截的请求和响应是否需要打印日志（不打印上传文件参数 multipart、下载文件响应等）
+3. servlet 3 引入的异步请求支持
+4. mdc 上下文的传递（异步线程、异步请求调度）
+5. 消息队列传递跟踪
+   rabbitTemplate.setBeforePublishPostProcessors()
+
+
 ### 各组件请求，响应处理顺序
 1. Filter begin
 2. RequestMappingHandlerMapping
@@ -45,3 +54,5 @@
 7. HandlerInterceptor postHandle
 8. HandlerInterceptor afterCompletion
 9. Filter End 
+
+https://docs.spring.io/spring-framework/docs/5.3.31/reference/html/web.html#mvc-logging
