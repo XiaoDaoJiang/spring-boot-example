@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * 定义任务、触发时机
  * 启动后自动持久化到数据库中
  */
-@Configuration
+// @Configuration
 public class ScheduleConfiguration {
 
     public static class DemoJob01Configuration {

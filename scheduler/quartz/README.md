@@ -60,4 +60,17 @@ Job 类型
 有状态 Job 不可同时执行（必须为集群模式），用PersistJobDataAfterExecution 和 DisallowConcurrentExecution 注解
 无状态 Job 可以同时执行
 
+业务逻辑上的 Job 与 JobDetail 一一对应，JobDetail 由 JobKey（name+group） 标识
+
 [https://bbs.huaweicloud.com/blogs/329247](https://bbs.huaweicloud.com/blogs/329247)
+
+
+### 集群配置
+同一个集群，SchedulerName 和 ScheduleInstanceName 相同，集群中的不同节点 ScheduleInstanceId 不同
+```yaml
+  org:
+    quartz:
+      scheduler:
+        instanceId: AUTO # 实例 ID，根据机器名字和时间戳生成 SimpleInstanceIdGenerator
+        instanceName: clusteredScheduler # 实例名字
+```

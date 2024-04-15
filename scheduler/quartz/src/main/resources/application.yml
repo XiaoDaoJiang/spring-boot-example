@@ -22,11 +22,19 @@ spring:
     properties: # 添加 Quartz Scheduler 附加属性，更多可以看 http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration.html 文档
       org:
         quartz:
+          scheduler:
+            instanceId: AUTO # 实例 ID
+            instanceName: clusteredScheduler # 实例名字
           # JobStore 相关配置
           jobStore:
             # 数据源名称
             dataSource: quartzDataSource # 使用的数据源
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX # JobStore 实现类
+            # 高版本 spring-boot-starter-quartz 中，通过自动配置 QuartzAutoConfiguration中的schedulerFactoryBean，
+            # 注入@QuartzDataSource 数据源 对应的是 LocalDataSourceJobStore ，而不是 JobStoreTX(较低版本会覆盖，高版本中指定后不修改，会导致Quartz数据源配置错误)
+            # 若一定要使用 JobStoreTX ，则不能使用自动配置指定的数据源，而是自己按照org.quartz.dataSource.*配置Quartz数据源
+            # 具体解析数据源查看：org.quartz.impl.StdSchedulerFactory.instantiate() Set up any DataSources
+            # 高版本不推荐使用
+            # class: org.quartz.impl.jdbcjobstore.JobStoreTX # JobStore 实现类
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
             tablePrefix: QRTZ_ # Quartz 表前缀
             isClustered: true # 是集群模式
