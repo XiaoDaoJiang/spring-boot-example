@@ -1,9 +1,75 @@
 ## hibernate
+### hibernate 和 jpa 的关系
+hibernate 是 jpa 的一种实现，供应商；核心类对应关系：EntityManagerFactory = SessionFactory, EntityManager = Session
 ### 如何执行与数据库交互
-1. 初始化 EntityManagerFactory 并指定了 DataSource(LocalContainerEntityManagerFactoryBean) 时会初始化 SessionFactoryImpl 并使用 中的 FastSessionServices 缓存了 ConnectionProvider
-2. 入口为 SessionFactory 的 openSession 方法，返回 SessionImpl 实例(SessionImpl 实现了 Session 接口，Session 接口定义了各种CRUD方法)
-3. 执行
-   * 查询通过 Loader 获取 session 中的 JdbcCoordinator[Connection] 构建查询使用的 PrepareStatement 并执行，返回 ResultSet
+1. LocalContainerEntityManagerFactoryBean 根据 JpaVendorAdapter （HibernateJpaVendorAdapter） 获取 persistentProviders（SpringHibernateJpaPersistenceProvider），以此与 Hibernate 实现的 EntityManagerFactoryBuilder 构建 EntityManagerFactory
+   ```java
+   
+   ```
+2. 初始化 EntityManagerFactory（实际就是 SessionFactoryImpl） 并指定了 DataSource( ) 时会初始化 SessionFactoryImpl 时，创建 FastSessionServices并 缓存了 ConnectionProvider(DatasourceConnectionProviderImpl 就是数据源，后续就是从这个数据源获取连接)、
+3. 入口为 SessionFactory 的 openSession 方法，返回 SessionImpl 实例(SessionImpl 实现了 Session 接口，Session 接口定义了各种CRUD方法)
+   ```java
+      public JdbcCoordinatorImpl(
+                  Connection userSuppliedConnection,
+                  JdbcSessionOwner owner,
+                  JdbcServices jdbcServices) {
+              this.isUserSuppliedConnection = userSuppliedConnection != null;
+      
+              final ResourceRegistry resourceRegistry = new ResourceRegistryStandardImpl(
+                      owner.getJdbcSessionContext().getObserver()
+              );
+              if ( isUserSuppliedConnection ) {
+                  this.logicalConnection = new LogicalConnectionProvidedImpl( userSuppliedConnection, resourceRegistry );
+              }
+              else {
+                  this.logicalConnection = new LogicalConnectionManagedImpl(
+                          owner.getJdbcConnectionAccess(),
+                          owner.getJdbcSessionContext(),
+                          resourceRegistry,
+                          jdbcServices
+                  );
+              }
+              this.owner = owner;
+              this.jdbcServices = jdbcServices;
+          }
+   ```
+4. 若当下不存在事务，则每次从数据源中获取连接，若为事务则使用的是同一个EntityManager(SessionImpl) 即同一个连接（通过注入 EntityManager 其实是 Shared EntityManager proxy for target factory [org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean]，通过代理增强从当前事务上下文中获取已绑定的EntityManager）
+   ```java
+   public class SharedEntityManagerBean extends EntityManagerFactoryAccessor
+           implements FactoryBean<EntityManager>, InitializingBean {
+               @Override
+               public final void afterPropertiesSet() {
+                  EntityManagerFactory emf = getEntityManagerFactory();
+                  if (emf == null) {
+                     throw new IllegalArgumentException("'entityManagerFactory' or 'persistenceUnitName' is required");
+                  }
+                  if (emf instanceof EntityManagerFactoryInfo) {
+                     EntityManagerFactoryInfo emfInfo = (EntityManagerFactoryInfo) emf;
+                     if (this.entityManagerInterface == null) {
+                        this.entityManagerInterface = emfInfo.getEntityManagerInterface();
+                        if (this.entityManagerInterface == null) {
+                           this.entityManagerInterface = EntityManager.class;
+                        }
+                     }
+                  }
+                  else {
+                     if (this.entityManagerInterface == null) {
+                        this.entityManagerInterface = EntityManager.class;
+                     }
+                  }
+                  // 创建一个事务上下文共享的entityManager代理
+                  this.shared = SharedEntityManagerCreator.createSharedEntityManager(
+                          emf, getJpaPropertyMap(), this.synchronizedWithTransaction, this.entityManagerInterface);
+               }
+   
+               // 自动注入的 EntityManager 都是这个增强事务共享的代理对象
+               public EntityManager getObject() {
+                  return this.shared;
+               }
+           }
+   ```
+5. 执行
+   * 最终执行查询通过是 Loader（org.hibernate.loader.Loader.prepareQueryStatement） 获取 session 中的 JdbcCoordinator[Connection] 构建查询使用的 PrepareStatement 并执行，返回 ResultSet
    * 增删改通过 ActionQueue 将操作放入队列中，等待 flush 时通过 AbstractEntityPersister(实现 EntityPersister) 使用 JdbcCoordinator[Connection] 生成对应的 PreparedStatement 并最终通过 jdbc 执行
 
 

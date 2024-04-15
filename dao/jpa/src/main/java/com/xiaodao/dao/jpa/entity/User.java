@@ -2,7 +2,7 @@ package com.xiaodao.dao.jpa.entity;
 
 import com.xiaodao.dao.jpa.annotation.SignField;
 import com.xiaodao.dao.jpa.entity.convert.GenderConverter;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,9 +12,11 @@ import java.io.Serializable;
  * @Author
  * @Date 2023-05-22
  */
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "t_user")
 // @ExcludeSuperclassListeners
 public class User extends BaseEntity implements Serializable {
 

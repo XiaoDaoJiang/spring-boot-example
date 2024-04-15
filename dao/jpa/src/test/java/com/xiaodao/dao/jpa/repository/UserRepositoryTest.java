@@ -3,7 +3,9 @@ package com.xiaodao.dao.jpa.repository;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.xiaodao.dao.jpa.SignListener;
+import com.xiaodao.dao.jpa.config.EntityManagerConfig;
 import com.xiaodao.dao.jpa.entity.User;
+import com.xiaodao.dao.jpa.service.UserService;
 import org.assertj.core.util.Lists;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -12,7 +14,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +26,12 @@ import java.util.Date;
 import java.util.List;
 
 // @DataJpaTest
-@Commit
+// @Commit
 // @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 
 @Transactional
 @SpringBootTest
+@Import(EntityManagerConfig.class)
 class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
@@ -35,7 +40,12 @@ class UserRepositoryTest {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
+    @Qualifier("entityManagerPrimary")
     private EntityManager entityManager;
+
+
+    @Autowired
+    private UserService userService;
 
     @BeforeEach
     public void init() {
@@ -58,7 +68,12 @@ class UserRepositoryTest {
         user.setAge(RandomUtil.randomInt(50));
         user.setGender(String.valueOf(RandomUtil.randomInt(3)));
 
-        userRepository.save(user);
+        // userRepository.save(user);
+        final User saveUser = userService.createUser(user);
+
+        final User queryByEM = entityManager.find(User.class, saveUser.getId());
+        Assertions.assertEquals(saveUser, queryByEM);
+
     }
 
     @Test
