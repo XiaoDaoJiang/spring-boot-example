@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://127.0.0.1:33066/ruiyun?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath*:mapper/*
+  type-handlers-package: com.xiaodao.mybatis.dao.typehandler
