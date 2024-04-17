@@ -8,3 +8,7 @@ spring:
 mybatis:
   mapper-locations: classpath*:mapper/*
   type-handlers-package: com.xiaodao.mybatis.dao.typehandler
+
+logging:
+  level:
+    com.xiaodao.mybatis.dao: debug
