@@ -65,7 +65,7 @@ public class TcScaleTemplateController {
      * @return 编辑结果
      */
     @PutMapping
-    public ResponseEntity<TcScaleTemplate> edit(TcScaleTemplate tcScaleTemplate) {
+    public ResponseEntity<TcScaleTemplate> edit(@RequestBody TcScaleTemplate tcScaleTemplate) {
         return ResponseEntity.ok(this.tcScaleTemplateService.update(tcScaleTemplate));
     }
 

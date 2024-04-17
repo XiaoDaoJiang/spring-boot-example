@@ -14,8 +14,13 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="TcScaleTemplateMap">
-        select
-ID, NAME, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE, related_state
+        select ID,
+               NAME,
+               CREATE_BY,
+               CREATE_DATE,
+               UPDATE_BY,
+               UPDATE_DATE,
+               related_state
         from tc_scale_template
         where ID = #{id}
     </select>

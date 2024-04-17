@@ -1,15 +1,11 @@
 package com.xiaodao.mybatis.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.util.RawValue;
 import com.xiaodao.mybatis.valueobject.RelatedCondition;
-import com.xiaodao.mybatis.valueobject.ScaleRelatedConditionEnum;
 import lombok.Data;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,26 +24,34 @@ public class TcScaleTemplate implements Serializable {
 
     private String createBy;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createDate;
 
     private String updateBy;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date updateDate;
 
-    public void setRelatedState(String relatedState) {
+
+    /**
+     * 使用 TypeHandler 转换 json 和 vo
+     */
+    private List<RelatedCondition> relatedState;
+
+    /* public void setRelatedState(String relatedState) {
         this.relatedState = relatedState;
         this.relatedStateJSON = new RawValue(relatedState);
     }
 
-    /**
+     *//**
      * 关联状态
-     */
+     *//*
     // private Object relatedState;
     // private List<RelatedCondition> relatedState;
     @JsonRawValue
     private String relatedState;
 
-    private RawValue relatedStateJSON;
+    private RawValue relatedStateJSON; */
 
 
 }

@@ -6,6 +6,8 @@ import com.xiaodao.mybatis.valueobject.RelatedCondition;
 import lombok.SneakyThrows;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
+import org.apache.ibatis.type.MappedTypes;
 
 import java.io.IOException;
 import java.sql.CallableStatement;
@@ -23,6 +25,7 @@ import java.util.List;
  * @Date 2024-04-08 16:41
  * @Created by jianghaitao
  */
+// @MappedTypes(List.class)
 public class JSONTypeHandler extends BaseTypeHandler<List<RelatedCondition>> {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
