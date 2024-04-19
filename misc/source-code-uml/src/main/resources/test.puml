@@ -1,0 +1,6 @@
+@startuml
+interface HelloVisitor {
++ T visitS(HelloParser.SContextctx)
+}
+
+@enduml
