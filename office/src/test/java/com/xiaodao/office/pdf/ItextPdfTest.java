@@ -131,21 +131,10 @@ public class ItextPdfTest {
         cfg.setClassForTemplateLoading(ItextPdfTest.class, "/");
         cfg.setDefaultEncoding("UTF-8");
 
-        List<ScalePointModel> patientScale = new ArrayList<>();
-
-        IntStream.range(0, 10).forEach((i) -> {
-            final ScalePointModel scalePointModel = new ScalePointModel();
-            scalePointModel.setScaleGrade("132");
-            scalePointModel.setScalePoint("1" + i);
-            scalePointModel.setGaugeName("国际运动障碍学会帕金森病综合评价量表（MDS-UPDRS-III）");
-            patientScale.add(scalePointModel);
-        });
 
         // 数据模型
         Map<String, Object> model = new HashMap<>();
         model.put("user", "John Doe");
-
-        model.put("patientScale", patientScale);
 
         // 初始化字体供应器并添加中文字体
         FontProvider fontProvider = new FontProvider();
@@ -169,30 +158,5 @@ public class ItextPdfTest {
         }
     }
 
-    @Data
-    public static class ScalePointModel {
-        private String scaleInfoId;
-
-        private String scaleGrade;
-
-        private String scalePoint;
-
-        private String gaugeName;
-
-        /**
-         * 评估顺序
-         */
-        private String assessSequence;
-
-        /**
-         * 状态
-         */
-        private String state;
-
-        /**
-         * 改善率
-         */
-        private String improveRate;
-    }
 
 }

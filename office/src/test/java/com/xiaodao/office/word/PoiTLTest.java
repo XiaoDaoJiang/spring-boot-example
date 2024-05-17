@@ -27,16 +27,10 @@ public class PoiTLTest {
 
     @Test
     public void test() throws IOException {
-        File templateFile = new File("E:\\IdeaProjects\\learn\\spring-boot-example\\office\\src\\test\\resources\\template\\template.docx");
+        File templateFile = new File("template.docx");
         XWPFTemplate template = XWPFTemplate.compile(templateFile).render(
                 new HashMap<String, Object>(){{
-                    final ItextPdfTest.ScalePointModel scalePointModel = new ItextPdfTest.ScalePointModel();
-                    scalePointModel.setScaleGrade("132");
-                    scalePointModel.setScalePoint("1");
-                    scalePointModel.setState("开机;未手术");
-                    scalePointModel.setGaugeName("国际运动障碍学会帕金森病综合评价量表（MDS-UPDRS-III）");
-                    scalePointModel.setImproveRate("50%");
-                    put("scalePointModel", scalePointModel);
+                    put("title", "Hi, poi-tl Word模板引擎");
                 }});
         template.writeAndClose(Files.newOutputStream(Paths.get("output.docx")));
     }
