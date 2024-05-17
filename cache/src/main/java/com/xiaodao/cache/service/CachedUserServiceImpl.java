@@ -1,6 +1,5 @@
 package com.xiaodao.cache.service;
 
-import com.xiaodao.cache.CacheableWithTTL;
 import com.xiaodao.common.entity.User;
 import com.xiaodao.common.respository.UserRepository;
 import com.xiaodao.common.service.IUserService;
@@ -14,7 +13,7 @@ import java.util.List;
 // 这个注解表示类中共同放入到 user 模块中
 @CacheConfig(cacheNames = "user")
 @Service
-public class UserServiceImpl implements IUserService {
+public class CachedUserServiceImpl implements IUserService {
 
     @Autowired
     private UserRepository userRepository;

@@ -13,6 +13,7 @@
     <name>test</name>
     <modules>
         <module>jmh</module>
+        <module>unit-test</module>
     </modules>
 
     <properties>

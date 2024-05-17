@@ -3,6 +3,7 @@ package com.xiaodao.cache.controller;
 import com.xiaodao.common.entity.User;
 import com.xiaodao.common.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    @Qualifier("cachedUserServiceImpl")
     @Autowired
     private IUserService userService;
 
