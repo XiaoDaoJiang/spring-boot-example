@@ -27,7 +27,7 @@ public class PoiTLTest {
 
     @Test
     public void test() throws IOException {
-        File templateFile = new File("template.docx");
+        File templateFile = new File("E:\\IdeaProjects\\learn\\spring-boot-example\\office\\src\\test\\resources\\template\\template.docx");
         XWPFTemplate template = XWPFTemplate.compile(templateFile).render(
                 new HashMap<String, Object>(){{
                     put("title", "Hi, poi-tl Word模板引擎");
