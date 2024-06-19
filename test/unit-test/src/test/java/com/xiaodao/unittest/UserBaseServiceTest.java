@@ -6,7 +6,6 @@ import com.xiaodao.unittest.service.UserHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -62,7 +61,6 @@ public class UserBaseServiceTest {
         verify(userBaseServiceSpy, times(1)).queryById(any());
         verify(userBaseServiceSpy, times(1)).save(any());
 
-        verify(userBaseServiceSpy, Exception)
     }
 
     @Test
