@@ -174,7 +174,7 @@ protected void scheduleTasks(){
 }
 ```
 
-## 自动配置
+## 自动化配置
 
 org.springframework.boot.autoconfigure.task.TaskSchedulingProperties
 ```yaml
@@ -202,7 +202,7 @@ public class TaskSchedulingAutoConfiguration {
 
     /**
      * 若未配置任何 SchedulingConfigurer,TaskScheduler,ScheduledExecutorService 的 bean
-     * 则根据 TaskSchedulingProperties 配置的 TaskSchedulerBuilder 构建定时任务调度线程池（默认为单线程:poolSize=3）
+     * 则根据 TaskSchedulingProperties 配置的 TaskSchedulerBuilder 构建定时任务调度线程池（默认为单线程:poolSize=1）
      */
     @Bean
     @ConditionalOnBean(
