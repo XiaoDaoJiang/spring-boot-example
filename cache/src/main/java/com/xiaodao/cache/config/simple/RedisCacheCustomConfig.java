@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
+ * 适用于 spring.cache.type=redis 已经存在RedisCacheConfiguration.cacheManager情况下的配置个性化
  * redis cacheManagerCustomizers 配置，适用于深度自定义，同时又保证原始默认配置的兜底，保证灵活性
  *
  * @see org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
@@ -58,7 +59,7 @@ public class RedisCacheCustomConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * 自定义RedisCacheConfiguration 设置值序列化方式，改配置会覆盖默认的缓存配置
+     * 自定义默认 RedisCacheConfiguration 设置值序列化方式，该配置会覆盖默认的缓存配置
      *
      * @param cacheProperties 缓存属性
      * @return RedisCacheConfiguration

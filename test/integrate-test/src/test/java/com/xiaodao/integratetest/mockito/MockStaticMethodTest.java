@@ -1,6 +1,6 @@
-package com.xiaodao.unittest.mockito;
+package com.xiaodao.integratetest.mockito;
 
-import com.xiaodao.unittest.util.Foo;
+import com.xiaodao.integratetest.util.Foo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

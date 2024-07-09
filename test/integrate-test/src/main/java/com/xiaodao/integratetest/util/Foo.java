@@ -1,4 +1,4 @@
-package com.xiaodao.unittest.util;
+package com.xiaodao.integratetest.util;
 
 /**
  * @author jianghaitao

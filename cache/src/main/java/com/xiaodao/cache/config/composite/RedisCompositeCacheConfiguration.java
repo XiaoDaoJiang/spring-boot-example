@@ -81,7 +81,7 @@ public class RedisCompositeCacheConfiguration extends CachingConfigurerSupport {
 
 
     /**
-     * 自定义RedisCacheConfiguration 设置值序列化方式，改配置会覆盖默认的缓存配置
+     * 自定义RedisCacheConfiguration 设置值序列化方式，该配置会覆盖默认的缓存配置
      *
      * @param cacheProperties 缓存属性
      * @return RedisCacheConfiguration

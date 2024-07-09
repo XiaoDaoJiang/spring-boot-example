@@ -1,4 +1,4 @@
-package com.xiaodao.unittest.service;
+package com.xiaodao.integratetest.service;
 
 import com.xiaodao.common.entity.User;
 import com.xiaodao.common.service.impl.UserBaseService;
