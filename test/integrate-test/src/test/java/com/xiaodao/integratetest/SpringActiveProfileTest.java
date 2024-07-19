@@ -1,5 +1,6 @@
 package com.xiaodao.integratetest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -17,15 +19,20 @@ import java.util.Map;
  * @Date 2024-07-09 11:12
  * @Created by jianghaitao
  */
+@Slf4j
 @SpringBootTest
 public class SpringActiveProfileTest {
 
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     ApplicationContext applicationContext;
 
     @Test
     public void listConfigProperties() {
+        log.info("active profile：{}", Arrays.toString(env.getActiveProfiles()));
         final Environment env = applicationContext.getEnvironment();
         if (env instanceof ConfigurableEnvironment) {
             ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) env;
