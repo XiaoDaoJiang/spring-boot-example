@@ -1,7 +1,9 @@
 package com.xiaodao.common.service.impl;
 
 import com.xiaodao.common.entity.User;
+import com.xiaodao.common.respository.UserRepository;
 import com.xiaodao.common.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,6 +18,10 @@ import java.util.List;
  */
 @Service
 public class UserBaseService implements IUserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<User> list() {
         return Collections.emptyList();
@@ -43,7 +49,7 @@ public class UserBaseService implements IUserService {
 
     @Override
     public User queryById(Long id) {
-        return null;
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
