@@ -1,6 +1,5 @@
 package com.xiaodao.audit.domain;
 
-import com.xiaodao.common.entity.BaseAuditEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

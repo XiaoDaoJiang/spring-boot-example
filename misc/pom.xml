@@ -15,6 +15,7 @@
         <module>desensitization</module>
         <module>translation</module>
         <module>QLExpress</module>
+        <module>antlr4-demo</module>
         <!-- <module>source-code-uml</module> -->
         <module>java-parser-demo</module>
     </modules>
