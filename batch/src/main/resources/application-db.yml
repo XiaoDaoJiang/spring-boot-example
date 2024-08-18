@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/batch?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    driver-class-name: org.h2.Driver
+    # 使用本地文件，能够与不同进程或虚拟机连接共享数据（而mem模式下的不同jvm是唯一的，相互隔离），而mixed mode能够支持嵌入式和服务器模式，使得不同应用程序可以同时连接
+    url: jdbc:h2:./batch/src/main/resources/testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
