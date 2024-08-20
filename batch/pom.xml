@@ -20,6 +20,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <org.mapstruct.extensions.spring.version>1.1.1</org.mapstruct.extensions.spring.version>
     </properties>
     <dependencies>
@@ -68,6 +70,12 @@
             <groupId>org.mapstruct.extensions.spring</groupId>
             <artifactId>mapstruct-spring-annotations</artifactId>
             <version>${org.mapstruct.extensions.spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>4.0.2</version>
         </dependency>
 
         <!-- test -->
