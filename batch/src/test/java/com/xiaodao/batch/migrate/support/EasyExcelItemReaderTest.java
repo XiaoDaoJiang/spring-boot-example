@@ -24,7 +24,7 @@ class EasyExcelItemReaderTest {
         final Resource resource = new ClassPathResource("cutomerOrders.xlsx");
         final EasyExcelItemReader<CustomerRawDto> easyExcelItemReader
                 = new EasyExcelItemReader<>(
-                resource.getInputStream(), CustomerRawDto.class, null
+                resource, CustomerRawDto.class, null
         );
         System.out.println(easyExcelItemReader.read());
         assertNull(easyExcelItemReader.read());

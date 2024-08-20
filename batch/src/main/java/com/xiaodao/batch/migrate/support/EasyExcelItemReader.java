@@ -2,11 +2,10 @@ package com.xiaodao.batch.migrate.support;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.ReadListener;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
+import org.springframework.batch.item.*;
+import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -21,8 +20,8 @@ public class EasyExcelItemReader<T> implements ItemReader<T> {
 
     List<T> items;
 
-    public EasyExcelItemReader(InputStream inputStream, Class<T> clazz, ReadListener<?> readListener) {
-        this.items = EasyExcel.read(inputStream, clazz, readListener).sheet(0).doReadSync();
+    public EasyExcelItemReader(Resource resource, Class<T> clazz, ReadListener<?> readListener) throws IOException {
+        this.items = EasyExcel.read(resource.getInputStream(), clazz, readListener).sheet(0).doReadSync();
     }
 
     public T read() throws Exception, UnexpectedInputException,
