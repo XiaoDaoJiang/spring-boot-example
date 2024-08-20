@@ -1,4 +1,4 @@
-package com.xiaodao.integratetest.service;
+package com.xiaodao.unittest.service;
 
 import com.xiaodao.common.entity.User;
 import org.springframework.stereotype.Service;

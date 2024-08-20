@@ -1,8 +1,8 @@
 package com.xiaodao.integratetest;
 
 import com.xiaodao.common.entity.User;
-import com.xiaodao.integratetest.service.TestUserServiceImpl;
-import com.xiaodao.integratetest.service.UserHelper;
+import com.xiaodao.unittest.service.TestUserServiceImpl;
+import com.xiaodao.unittest.service.UserHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
