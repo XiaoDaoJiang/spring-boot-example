@@ -2,6 +2,7 @@ package com.xiaodao.batch.migrate.job;
 
 import com.xiaodao.batch.migrate.domain.CustomerRawDto;
 import com.xiaodao.batch.migrate.support.EasyExcelItemReader;
+import com.xiaodao.batch.migrate.support.MyListItemWriter;
 import com.xiaodao.batch.migrate.support.ValidationResult;
 import com.xiaodao.batch.migrate.support.ValidationRetainingItemProcessor;
 import org.springframework.batch.core.Job;
@@ -12,7 +13,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.support.ListItemWriter;
 import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,13 +58,14 @@ public class BatchMigrateJobConfig {
 
     @Bean
     @StepScope
-    public ItemReader<CustomerRawDto> itemReader(@Value("#{jobParameters['file']}") Resource resource) throws IOException {
+    public EasyExcelItemReader<CustomerRawDto> itemReader(@Value("#{jobParameters['file']}") Resource resource) throws IOException {
         return new EasyExcelItemReader<>(resource, CustomerRawDto.class, null);
     }
 
     @Bean
-    public ListItemWriter<ValidationResult<CustomerRawDto>> itemWriter() {
-        return new ListItemWriter<>();
+    @StepScope
+    public MyListItemWriter<ValidationResult<CustomerRawDto>> itemWriter() {
+        return new MyListItemWriter<>();
     }
 
     @Bean
