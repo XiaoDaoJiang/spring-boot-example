@@ -2,7 +2,7 @@ package com.xiaodao.batch.migrate.job;
 
 import com.xiaodao.batch.migrate.domain.CustomerRawDto;
 import com.xiaodao.batch.migrate.support.EasyExcelItemReader;
-import com.xiaodao.batch.migrate.support.MyListItemWriter;
+import com.xiaodao.batch.migrate.support.ExcelItemWriter;
 import com.xiaodao.batch.migrate.support.ValidationResult;
 import com.xiaodao.batch.migrate.support.ValidationRetainingItemProcessor;
 import org.springframework.batch.core.Job;
@@ -64,11 +64,12 @@ public class BatchMigrateJobConfig {
 
     @Bean
     @StepScope
-    public MyListItemWriter<ValidationResult<CustomerRawDto>> itemWriter() {
-        return new MyListItemWriter<>();
+    public ExcelItemWriter<ValidationResult<CustomerRawDto>> itemWriter() {
+        return new ExcelItemWriter<>();
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<CustomerRawDto, ValidationResult<CustomerRawDto>> itemValidator() throws Exception {
         BeanValidatingItemProcessor<CustomerRawDto> validator = new BeanValidatingItemProcessor<>();
         validator.afterPropertiesSet();

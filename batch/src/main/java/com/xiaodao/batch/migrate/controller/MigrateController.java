@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-import static com.xiaodao.batch.migrate.support.MyListItemWriter.VALID_RESULTS;
+import static com.xiaodao.batch.migrate.support.ExcelItemWriter.VALID_RESULTS;
 
 /**
  * @author xiaodaojiang
