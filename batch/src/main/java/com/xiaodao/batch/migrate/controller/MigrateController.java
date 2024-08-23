@@ -6,7 +6,6 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.item.support.ListItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import static com.xiaodao.batch.migrate.support.ExcelItemWriter.VALID_RESULTS;
@@ -60,18 +60,15 @@ public class MigrateController {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("file", "file:" + dest.getAbsolutePath())
-                .addDate("date", new java.util.Date())
+                .addDate("date", new Date())
                 .toJobParameters();
 
         final JobExecution run = jobLauncher.run(demoJob, jobParameters);
         log.info("JobExecution: {}", run);
         log.info("validationResult {}", run.getExecutionContext().get("validationResult"));
 
-        log.info("stepExecution: {}", run.getStepExecutions().stream().findFirst().get().getExecutionContext().get(VALID_RESULTS));
-
-
-        // List<?> writtenItems = listItemWriter.getWrittenItems();
-        // log.info("Written Items: {}", writtenItems);
+        // final List<ValidationResult<CustomerRawDto>> validationResults = (List<ValidationResult<CustomerRawDto>>) run.getStepExecutions().stream().findFirst().get().getExecutionContext().get(VALID_RESULTS);
+        // log.info("validationResults:size={},value= {}", validationResults == null ? 0 : validationResults.size(), validationResults);
 
         return "success";
     }

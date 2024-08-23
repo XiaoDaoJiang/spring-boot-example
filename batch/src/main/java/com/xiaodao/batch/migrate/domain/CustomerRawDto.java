@@ -7,6 +7,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author jianghaitao
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
  * @Created by jianghaitao
  */
 @Data
-public class CustomerRawDto {
+public class CustomerRawDto implements Serializable {
 
     @NotBlank
     @ExcelProperty("顾客")

@@ -1,6 +1,8 @@
 package com.xiaodao.batch.migrate.job;
 
 import com.xiaodao.batch.migrate.domain.CustomerRawDto;
+import com.xiaodao.batch.migrate.support.*;
+import org.springframework.batch.core.*;
 import com.xiaodao.batch.migrate.support.EasyExcelItemReader;
 import com.xiaodao.batch.migrate.support.ExcelItemWriter;
 import com.xiaodao.batch.migrate.support.ValidationResult;
@@ -11,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
@@ -42,19 +45,35 @@ public class BatchMigrateJobConfig {
     @Bean
     public Job demoJob(Step validStep) throws Exception {
         return this.jobs.get("demoJob")
+                // 使用 RunIdIncrementer
+                .incrementer(new RunIdIncrementer())
                 .start(validStep)
                 .build();
     }
 
     @Bean
-    public Step validStep(ItemReader<CustomerRawDto> itemReader) throws Exception {
+    public Step validStep(ItemReader<CustomerRawDto> itemReader,
+                          MyStepListener<CustomerRawDto, ValidationResult<CustomerRawDto>> myStepListener
+    ) throws Exception {
         return this.steps.get("validStep")
                 .<CustomerRawDto, ValidationResult<CustomerRawDto>>chunk(1)
                 .reader(itemReader)
                 .processor(itemValidator())
                 .writer(itemWriter())
+                .listener((ChunkListener) myStepListener)
+                .listener((StepExecutionListener) myStepListener)
+                .listener((ItemReadListener<CustomerRawDto>) myStepListener)
+                .listener((ItemProcessListener<CustomerRawDto, ValidationResult<CustomerRawDto>>) myStepListener)
+                .listener((ItemWriteListener<ValidationResult<CustomerRawDto>>) myStepListener)
+                .listener((SkipListener<CustomerRawDto, ValidationResult<CustomerRawDto>>) myStepListener)
                 .build();
     }
+
+    @Bean
+    public MyStepListener<CustomerRawDto, ValidationResult<CustomerRawDto>> myStepListener() {
+        return new MyStepListener<>();
+    }
+
 
     @Bean
     @StepScope
@@ -69,7 +88,6 @@ public class BatchMigrateJobConfig {
     }
 
     @Bean
-    @StepScope
     public ItemProcessor<CustomerRawDto, ValidationResult<CustomerRawDto>> itemValidator() throws Exception {
         BeanValidatingItemProcessor<CustomerRawDto> validator = new BeanValidatingItemProcessor<>();
         validator.afterPropertiesSet();
