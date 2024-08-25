@@ -1,5 +1,6 @@
 package com.xiaodao.batch.migrate.domain;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -7,7 +8,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 /**
  * @author jianghaitao
@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @Created by jianghaitao
  */
 @Data
-public class CustomerRawDto implements Serializable {
+public class CustomerRawDto extends ValidationDTO {
 
     @NotBlank
     @ExcelProperty("顾客")

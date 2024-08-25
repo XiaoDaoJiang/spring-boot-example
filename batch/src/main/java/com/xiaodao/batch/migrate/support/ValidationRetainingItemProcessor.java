@@ -1,17 +1,24 @@
 package com.xiaodao.batch.migrate.support;
 
+import com.xiaodao.batch.migrate.domain.ValidationDTO;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
+import org.springframework.validation.BindException;
 
 import javax.validation.ConstraintViolationException;
+import java.util.stream.Collectors;
 
-public class ValidationRetainingItemProcessor<T> implements ItemProcessor<T, ValidationResult<T>> {
+@Slf4j
+public class ValidationRetainingItemProcessor<T extends ValidationDTO> implements ItemProcessor<T, T> {
 
     private final BeanValidatingItemProcessor<T> delegate;
+
+    public static final String VALIDATION_CONTEXT_KEY = "validationContext";
 
     private final ValidationContext validationContext = new ValidationContext();
 
@@ -26,28 +33,35 @@ public class ValidationRetainingItemProcessor<T> implements ItemProcessor<T, Val
     }
 
     @Override
-    public ValidationResult<T> process(T item) {
+    public T process(T item) {
         this.validationContext.totalCount++;
-        ValidationResult<T> result = new ValidationResult<>(item);
         try {
             delegate.process(item); // 进行校验
             this.validationContext.successCount++;
         } catch (ValidationException e) {
             this.validationContext.invalidCount++;
-            result.setError(true);
-            if (e.getCause() instanceof ConstraintViolationException) {
+            if (e.getCause() instanceof BindException) {
+                BindException bindException = (BindException) e.getCause();
+                bindException.getAllErrors().forEach(error -> {
+                    item.setErrorMsg(error.getDefaultMessage());
+                });
+            } else if (e.getCause() instanceof ConstraintViolationException) {
                 ConstraintViolationException violationException = (ConstraintViolationException) e.getCause();
-                result.setViolationException(violationException); // 保存校验异常信息
+                final String collect = violationException.getConstraintViolations().stream()
+                        .map(violation -> violation.getMessage())
+                        .collect(Collectors.joining(","));
+                item.setErrorMsg(collect);
             } else {
-                result.setValidationException(e); // 其他类型的校验异常
+                item.setErrorMsg(getInvalidMessage(e));
             }
         }
-        return result; // 返回校验结果对象
+        return item; // 返回校验结果对象
     }
 
     @BeforeStep
     public void initValidStepContext(StepExecution stepExecution) {
-        stepExecution.getExecutionContext().put("validationContext", this.validationContext);
+        log.info("initValidStepContext..........");
+        stepExecution.getExecutionContext().put(VALIDATION_CONTEXT_KEY, this.validationContext);
     }
 
     @Data
@@ -55,6 +69,11 @@ public class ValidationRetainingItemProcessor<T> implements ItemProcessor<T, Val
         private int totalCount;
         private int successCount;
         private int invalidCount;
+    }
+
+
+    protected String getInvalidMessage(ValidationException e) {
+        return e.getMessage();
     }
 
 }

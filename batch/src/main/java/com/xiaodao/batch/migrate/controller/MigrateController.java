@@ -1,5 +1,8 @@
 package com.xiaodao.batch.migrate.controller;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import com.xiaodao.batch.migrate.support.ValidationRetainingItemProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -16,9 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.Date;
-import java.util.List;
 
-import static com.xiaodao.batch.migrate.support.ExcelItemWriter.VALID_RESULTS;
 
 /**
  * @author xiaodaojiang
@@ -60,15 +61,18 @@ public class MigrateController {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("file", "file:" + dest.getAbsolutePath())
+                .addString("outputFile", "file:" + uploadDir + File.separator + "output-"
+                        + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT)
+                        + file.getOriginalFilename())
                 .addDate("date", new Date())
                 .toJobParameters();
 
         final JobExecution run = jobLauncher.run(demoJob, jobParameters);
         log.info("JobExecution: {}", run);
-        log.info("validationResult {}", run.getExecutionContext().get("validationResult"));
 
-        // final List<ValidationResult<CustomerRawDto>> validationResults = (List<ValidationResult<CustomerRawDto>>) run.getStepExecutions().stream().findFirst().get().getExecutionContext().get(VALID_RESULTS);
-        // log.info("validationResults:size={},value= {}", validationResults == null ? 0 : validationResults.size(), validationResults);
+        final ValidationRetainingItemProcessor.ValidationContext validationContext
+                = (ValidationRetainingItemProcessor.ValidationContext) run.getStepExecutions().stream().findFirst().get().getExecutionContext().get(ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY);
+        log.info("validationContext {}", validationContext);
 
         return "success";
     }

@@ -19,7 +19,6 @@ import org.springframework.core.convert.converter.Converter;
 @Mapper(config = MapperSpringConfig.class)
 public interface CustomerConverter extends Converter<Customer, CustomerDto> {
 
-    @Mapping(target = "stock", ignore = true)
     @Mapping(target = "orders", source = "orderItems")
     @Mapping(target = "customerName", source = "name")
     CustomerDto convert(Customer customer);
