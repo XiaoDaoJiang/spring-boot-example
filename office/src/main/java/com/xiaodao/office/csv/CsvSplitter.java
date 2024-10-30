@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 public class CsvSplitter {
 
-    public final Set<String> SPLIT_TABLE_NAME = Sets.newHashSet("JDA_DIC_ITEM",
-            "JDA_DIC_TYPE",
-            "JHC_PB_PERSON_INFO",
-            "JHC_PT_PERSON");
+    public final Set<String> SPLIT_TABLE_NAME = Sets.newHashSet("DIC_ITEM",
+            "DIC_TYPE",
+            "PERSON_INFO",
+            "PERSON");
 
 
     public void read(String schema) {
@@ -64,14 +64,13 @@ public class CsvSplitter {
         tableName = StrUtil.unWrap(tableName, '\"');
         tableName = StrUtil.unWrap(tableName, '\'');
         // 指定路径和编码
-        CsvWriter writer = CsvUtil.getWriter("E:\\com\\jadefortune\\工作内容\\政务人员\\task\\测试数据\\" + schema + "\\" + tableName + ".csv",
-                CharsetUtil.systemCharset(),false);
+        CsvWriter writer = CsvUtil.getWriter("测试数据\\" + schema + "\\" + tableName + ".csv",
+                CharsetUtil.systemCharset(), false);
         // 按行写出
         writer.write(aTaleData);
     }
 
     public static void main(String[] args) {
-        // new CsvSplitter().read("ZSJ_TEST_UAT_SHARD");
-        new CsvSplitter().read("ZSJ_TEST_UAT");
+        new CsvSplitter().read("xxx_TEST_UAT");
     }
 }

@@ -86,7 +86,7 @@ public class RedisSimpleLock {
         // 注意正确返回值，支持的类型 org.springframework.data.redis.connection.ReturnType
         RedisScript<Long> redisScript = RedisScript.of(RELEASE_LOCK, Long.class);
         Long result = redisTemplate.execute(redisScript, Collections.singletonList(generateKey(key)), value);
-        log.info("释放锁的结果：" + result);
+        log.info("释放锁的结果：{}", result);
         if (result != null && result == 1) {
             log.info("解锁成功：{}，{}", key, value);
             return true;

@@ -43,6 +43,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Groovy Script Engine -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>QLExpress</artifactId>
+            <version>3.3.4</version>
+        </dependency>
+
     </dependencies>
 
 </project>

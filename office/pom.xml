@@ -47,12 +47,11 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!-- <dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.3.4</version>
-        </dependency> -->
+            <version>4.0.3</version>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

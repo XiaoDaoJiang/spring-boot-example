@@ -1,0 +1,137 @@
+{
+  "constraints": [
+    {
+      "className": "com.xiaodao.validation.User",
+      "modelConstraints": {
+        "type": "类校验",
+        "message": "User类校验失败"
+      },
+      "properties": [
+        {
+          "name": "name",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "NotNull",
+              "message": "姓名不能为空"
+            },
+            {
+              "type": "Size",
+              "min": 2,
+              "max": 50,
+              "message": "姓名长度必须在2到50之间"
+            }
+          ]
+        },
+        {
+          "name": "sex",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "Pattern",
+              "regexp": "[男|女]",
+              "message": "性别必须是男或女"
+            }
+          ]
+        },
+        {
+          "name": "dateOfBirth",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "日期时间",
+              "message": "出生日期格式不正确"
+            }
+          ]
+        },
+        {
+          "name": "email",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "Email",
+              "message": "邮箱格式不正确"
+            }
+          ]
+        },
+        {
+          "name": "age",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "Min",
+              "value": 18,
+              "message": "年龄必须至少为18岁"
+            }
+          ]
+        },
+        {
+          "name": "car",
+          "elementType": "FIELD",
+          "ignoreAnnotations": true
+        },
+        {
+          "name": "foor",
+          "elementType": "FIELD"
+        },
+        {
+          "name": "bars",
+          "elementType": "FIELD"
+        }
+      ]
+    },
+    {
+      "className": "com.xiaodao.validation.first.Foor",
+      "modelConstraints": {
+        "type": "脚本约束",
+        "message": "Foor类校验失败",
+        "script": "_this.foorName.length() <= 10",
+        "reportOn": "foorName"
+      },
+      "properties": [
+        {
+          "name": "foorName",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "Size",
+              "min": 2,
+              "max": 10,
+              "message": "名称长度必须在2到10之间"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "className": "com.xiaodao.validation.first.Bar",
+      "properties": [
+        {
+          "name": "barName",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "Size",
+              "min": 2,
+              "max": 10,
+              "message": "名称长度必须在2到10之间"
+            }
+          ]
+        },
+        {
+          "name": "barAddress",
+          "elementType": "FIELD",
+          "constraints": [
+            {
+              "type": "脚本约束",
+              "message": "地址长度不能大于50",
+              "lang": "qlExpress",
+              "alias": "value",
+              "script": "value.length() <= 50"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
