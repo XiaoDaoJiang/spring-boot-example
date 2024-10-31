@@ -16,7 +16,7 @@ public class ValidationConfig {
     @Data
     public static class Constraints {
         private String className;
-        private ConstraintDefinition<ModelConstraint> modelConstraints;
+        private ConstraintDefinition<? extends Annotation> modelConstraints;
         private List<PropertyConstraints> properties;
 
     }
