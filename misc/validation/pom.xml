@@ -45,10 +45,12 @@
 
         <!-- Groovy Script Engine -->
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>3.0.9</version>
+            <version>4.0.24</version>
+            <type>pom</type>
         </dependency>
+
 
         <dependency>
             <groupId>com.alibaba</groupId>
