@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <jimmer.version>0.9.20</jimmer.version>
+        <jimmer.version>0.9.22</jimmer.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 

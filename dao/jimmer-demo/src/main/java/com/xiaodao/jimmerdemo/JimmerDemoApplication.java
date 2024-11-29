@@ -10,6 +10,7 @@ import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class JimmerDemoApplication {
 
     public static void main(String[] args) {
@@ -34,9 +35,10 @@ public class JimmerDemoApplication {
         public HttpEntity<Object> hello() {
             int pageIndex = 0;
             int pageSize = 10;
-            Fetcher<Book> fetcher = BookFetcher.$.allScalarFields()
-                    .store(BookStoreFetcher.$.allScalarFields())
-                    .authors(AuthorFetcher.$.allScalarFields());
+            Fetcher<Book> fetcher = null;
+            // Fetcher<Book> fetcher = BookFetcher.$.allScalarFields()
+            //         .store(BookStoreFetcher.$.allScalarFields())
+            //         .authors(AuthorFetcher.$.allScalarFields());
             String sortCode = "";
             String name = null;
             BigDecimal minPrice = null;
@@ -49,6 +51,7 @@ public class JimmerDemoApplication {
             final List<Book> rows = books.getRows();
             for (Book book : rows) {
                 book.price();
+                System.out.println(book);
             }
             return new HttpEntity<>(books);
         }
