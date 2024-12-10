@@ -21,7 +21,7 @@ public class BookRepository {
     private static final BookTable T = BookTable.$;
 
     @Autowired
-    private JSqlClient sqlClient;
+    private JSqlClient sqlClient1;
 
     public Page<Book> findBooks(
 
@@ -41,7 +41,7 @@ public class BookRepository {
             @Nullable String authorName,
             @Nullable Gender authorGender
     ) {
-        return sqlClient
+        return sqlClient1
                 .createQuery(T)
                 .where(T.name().ilikeIf(name))
                 .where(T.price().betweenIf(minPrice, maxPrice))

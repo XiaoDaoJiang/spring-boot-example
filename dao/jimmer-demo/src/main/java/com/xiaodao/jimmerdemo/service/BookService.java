@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookService {
 
     @Autowired
-    private JSqlClient sqlClient;
+    private JSqlClient sqlClient1;
 
 
-    @Transactional(transactionManager = "tm1")
+    // @Transactional(transactionManager = "tm1")
     public @Nullable BookDetailView findById(long id) {
-        return sqlClient.findById(BookDetailView.class,id);
+        return sqlClient1.findById(BookDetailView.class,id);
     }
 
 }

@@ -1,0 +1,7 @@
+input BookStoreInput {
+    #allScalars
+    books{
+        #allScalars
+        -id
+    }
+}

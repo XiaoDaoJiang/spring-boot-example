@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface BookJRepository extends JRepository<Book, Long> {
 
+
+    // spring data风格会需要一个 sqlClient 实例: No bean named 'sqlClient' available
+
+
     List<Book> findByNameOrderByEditionDesc(
             @Nullable String name
     );
