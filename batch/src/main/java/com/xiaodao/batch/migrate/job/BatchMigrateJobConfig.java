@@ -4,7 +4,6 @@ import com.xiaodao.batch.migrate.domain.Customer;
 import com.xiaodao.batch.migrate.domain.CustomerDto;
 import com.xiaodao.batch.migrate.domain.CustomerRawDto;
 import com.xiaodao.batch.migrate.support.*;
-import com.xiaodao.batch.service.CustomerService;
 import org.hibernate.SessionFactory;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -34,6 +33,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.util.List;
+
+import static com.xiaodao.batch.migrate.support.ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY;
 
 /**
  * @author xiaodaojiang
@@ -72,14 +73,12 @@ public class BatchMigrateJobConfig {
 
     public class ValidToSaveDBDecider implements JobExecutionDecider {
         public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
-            final ValidationRetainingItemProcessor.ValidationContext validateContext = (ValidationRetainingItemProcessor.ValidationContext) stepExecution.getExecutionContext().get(ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY);
-            String status;
+            final ValidationContext validateContext = (ValidationContext) stepExecution.getExecutionContext().get(VALIDATION_CONTEXT_KEY);
             if (validateContext.getInvalidCount() > 0) {
-                status = "FAILED";
+                return FlowExecutionStatus.FAILED;
             } else {
-                status = "COMPLETED";
+                return FlowExecutionStatus.COMPLETED;
             }
-            return new FlowExecutionStatus(status);
         }
     }
 

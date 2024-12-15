@@ -1,7 +1,6 @@
 package com.xiaodao.batch.migrate.support;
 
 import com.xiaodao.batch.migrate.domain.ValidationDTO;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -10,6 +9,7 @@ import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.validation.BindException;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
@@ -42,13 +42,11 @@ public class ValidationRetainingItemProcessor<T extends ValidationDTO> implement
             this.validationContext.invalidCount++;
             if (e.getCause() instanceof BindException) {
                 BindException bindException = (BindException) e.getCause();
-                bindException.getAllErrors().forEach(error -> {
-                    item.setErrorMsg(error.getDefaultMessage());
-                });
+                item.setErrorMsg(getInvalidMessage(bindException));
             } else if (e.getCause() instanceof ConstraintViolationException) {
                 ConstraintViolationException violationException = (ConstraintViolationException) e.getCause();
                 final String collect = violationException.getConstraintViolations().stream()
-                        .map(violation -> violation.getMessage())
+                        .map(ConstraintViolation::getMessage)
                         .collect(Collectors.joining(","));
                 item.setErrorMsg(collect);
             } else {
@@ -58,17 +56,20 @@ public class ValidationRetainingItemProcessor<T extends ValidationDTO> implement
         return item; // 返回校验结果对象
     }
 
+    private String getInvalidMessage(BindException bindException) {
+        bindException.getFieldErrors().forEach(fieldError -> {
+            log.error("field:{}, message:{}", fieldError.getField(), fieldError.getDefaultMessage());
+        });
+        return bindException.getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage() + (error.getRejectedValue() == null ? "" :
+                        ":" + error.getRejectedValue()))
+                .collect(Collectors.joining("；\n"));
+    }
+
     @BeforeStep
     public void initValidStepContext(StepExecution stepExecution) {
         log.info("initValidStepContext..........");
         stepExecution.getExecutionContext().put(VALIDATION_CONTEXT_KEY, this.validationContext);
-    }
-
-    @Data
-    public static class ValidationContext {
-        private int totalCount;
-        private int successCount;
-        private int invalidCount;
     }
 
 

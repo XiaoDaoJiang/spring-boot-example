@@ -20,8 +20,11 @@ public class EasyExcelItemReader<T> implements ItemReader<T> {
 
     List<T> items;
 
-    public EasyExcelItemReader(Resource resource, Class<T> clazz, ReadListener<?> readListener) throws IOException {
-        this.items = EasyExcel.read(resource.getInputStream(), clazz, readListener).sheet(0).doReadSync();
+    private ReadListener<T> readListener;
+
+    public EasyExcelItemReader(Resource resource, Class<T> clazz, ReadListener<T> readListener) throws IOException {
+        this.readListener = readListener;
+        EasyExcel.read(resource.getInputStream(), clazz, readListener).sheet(0).doRead();
     }
 
     public T read() throws Exception, UnexpectedInputException,

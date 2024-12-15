@@ -21,11 +21,9 @@ public class MyListItemWriter<T extends ValidationDTO> extends AbstractItemStrea
 
     private final ItemStreamWriter<T> delegate;
 
+    private ValidationContext validationContext;
 
-    // @Value("#{stepExecution}")
-    // private StepExecution stepExecution;
-
-    private boolean isError;
+    private boolean hasError;
 
     private final List<T> tempItems = new ArrayList<>();
 
@@ -42,7 +40,8 @@ public class MyListItemWriter<T extends ValidationDTO> extends AbstractItemStrea
     @Override
     public void write(List<? extends T> items) throws Exception {
         log.info("write..........");
-        if (isError) {
+        hasError = hasError || (validationContext != null && validationContext.getInvalidCount() > 0);
+        if (hasError) {
             if (!tempItems.isEmpty()) {
                 delegate.write(tempItems);
                 tempItems.clear();
@@ -61,10 +60,13 @@ public class MyListItemWriter<T extends ValidationDTO> extends AbstractItemStrea
     public void update(ExecutionContext executionContext) {
         log.info("update..........");
 
-        if (!isError) {
-            final ValidationRetainingItemProcessor.ValidationContext validationContext = (ValidationRetainingItemProcessor.ValidationContext) executionContext.get(ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY);
-            if (validationContext != null && validationContext.getInvalidCount() > 0) {
-                isError = true;
+        if (!hasError && validationContext == null) {
+            final ValidationContext validationContext = (ValidationContext) executionContext.get(ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY);
+            if (validationContext != null) {
+                this.validationContext = validationContext;
+                if (validationContext.getInvalidCount() > 0) {
+                    hasError = true;
+                }
             }
         }
 

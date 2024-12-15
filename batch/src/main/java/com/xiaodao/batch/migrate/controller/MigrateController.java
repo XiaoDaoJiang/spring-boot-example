@@ -2,7 +2,6 @@ package com.xiaodao.batch.migrate.controller;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import com.xiaodao.batch.migrate.support.ValidationRetainingItemProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -62,7 +61,6 @@ public class MigrateController {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("file", "file:" + dest.getAbsolutePath())
                 .addString("outputFile", "file:" + uploadDir + File.separator + "output-"
-                        + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT)
                         + file.getOriginalFilename())
                 .addDate("date", new Date())
                 .toJobParameters();
@@ -70,9 +68,12 @@ public class MigrateController {
         final JobExecution run = jobLauncher.run(demoJob, jobParameters);
         log.info("JobExecution: {}", run);
 
-        final ValidationRetainingItemProcessor.ValidationContext validationContext
-                = (ValidationRetainingItemProcessor.ValidationContext) run.getStepExecutions().stream().findFirst().get().getExecutionContext().get(ValidationRetainingItemProcessor.VALIDATION_CONTEXT_KEY);
-        log.info("validationContext {}", validationContext);
+        log.info("step executions: {}", run.getStepExecutions());
+
+        run.getStepExecutions().forEach(stepExecution -> {
+            log.info("step:{},step execution context:{}", stepExecution.getStepName(), stepExecution.getExecutionContext());
+        });
+
 
         return "success";
     }
