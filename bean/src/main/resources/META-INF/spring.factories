@@ -1,1 +1,4 @@
+# Auto Configure 能够扫描到的包路径则不需要配置
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#com.xiaodao.bean.spi.SpringSpiAutoConfiguration
 com.xiaodao.bean.spi.NameProvider=com.xiaodao.bean.spi.MyNameProviderImpl

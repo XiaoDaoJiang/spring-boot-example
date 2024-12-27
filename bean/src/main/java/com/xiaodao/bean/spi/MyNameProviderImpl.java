@@ -1,7 +1,6 @@
 package com.xiaodao.bean.spi;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * 自定义服务实现
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @Date 2024-04-15 22:52
  * @Created by xiaodaojiang
  */
-@Component
 public class MyNameProviderImpl implements NameProvider {
 
 

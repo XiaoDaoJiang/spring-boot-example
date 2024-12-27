@@ -6,8 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.util.Arrays;
-
 /**
  * 测试SPI
  *
@@ -25,9 +23,12 @@ public class SPITestBootstrap {
     @Autowired
     private SpringSPI springSPI;
 
+    @Autowired
+    private NameProvider nameProvider;
+
     @Test
     public void testName() {
-        System.out.println(Arrays.toString(springSPI.list()));
+        System.out.println(nameProvider.getName());
     }
 
     @TestConfiguration
