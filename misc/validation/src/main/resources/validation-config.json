@@ -2,10 +2,12 @@
   "constraints": [
     {
       "className": "com.xiaodao.validation.User",
-      "modelConstraints": {
-        "type": "类校验",
-        "message": "User类校验失败"
-      },
+      "modelConstraints": [
+        {
+          "type": "类校验",
+          "message": "User类校验失败"
+        }
+      ],
       "properties": [
         {
           "name": "name",
@@ -81,13 +83,26 @@
       ]
     },
     {
+      "className": "com.xiaodao.validation.first.Car",
+      "modelConstraints": [
+        {
+          "type": "脚本约束",
+          "lang": "spring",
+          "message": "Car类校验失败",
+          "script": "@carCaseCheckService.checkBizCase(#_this)"
+        }
+      ]
+    },
+    {
       "className": "com.xiaodao.validation.first.Foor",
-      "modelConstraints": {
-        "type": "脚本约束",
-        "message": "Foor类校验失败",
-        "script": "_this.foorName.length() <= 10",
-        "reportOn": "foorName"
-      },
+      "modelConstraints": [
+        {
+          "type": "脚本约束",
+          "message": "Foor类校验失败",
+          "script": "_this.foorName.length() <= 10",
+          "reportOn": "foorName"
+        }
+      ],
       "properties": [
         {
           "name": "foorName",

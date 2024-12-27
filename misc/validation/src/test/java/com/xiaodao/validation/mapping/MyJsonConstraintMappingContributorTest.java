@@ -11,8 +11,12 @@ import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 /**
@@ -22,7 +26,8 @@ import java.util.Set;
  * @Date 2024-10-29 16:01
  * @Created by jianghaitao
  */
-class MyJsonConstraintMappingContributorTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+public class MyJsonConstraintMappingContributorTest {
 
 
     Validator validator;

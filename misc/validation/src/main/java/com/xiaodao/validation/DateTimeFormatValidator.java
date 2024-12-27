@@ -1,7 +1,9 @@
 package com.xiaodao.validation;
 
 import cn.hutool.core.date.DateUtil;
+import com.xiaodao.validation.biz.CarCaseCheckServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -9,6 +11,8 @@ import javax.validation.ConstraintValidatorContext;
 @Slf4j
 public class DateTimeFormatValidator implements ConstraintValidator<ValidDateTimeFormat, String> {
 
+    @Autowired
+    private CarCaseCheckServiceImpl bizCaseCheckService;
 
     @Override
     public void initialize(ValidDateTimeFormat constraintAnnotation) {

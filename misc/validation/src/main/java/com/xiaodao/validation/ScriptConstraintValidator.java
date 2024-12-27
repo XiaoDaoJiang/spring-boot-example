@@ -1,5 +1,6 @@
 package com.xiaodao.validation;
 
+import cn.hutool.core.lang.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorInitializationContext;
@@ -12,6 +13,7 @@ import org.hibernate.validator.spi.scripting.ScriptEvaluationException;
 import org.hibernate.validator.spi.scripting.ScriptEvaluator;
 import org.hibernate.validator.spi.scripting.ScriptEvaluatorNotFoundException;
 
+import javax.validation.ConstraintDeclarationException;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.invoke.MethodHandles;
@@ -65,14 +67,22 @@ public class ScriptConstraintValidator extends AbstractScriptAssertValidator<Scr
             constraintValidatorContext.unwrap(HibernateConstraintValidatorContext.class).addMessageParameter("script", escapedScript);
         }
 
-        boolean validationResult = scriptAssertContext.evaluateScriptAssertExpression(value, alias);
+        Pair<Boolean, String> validationResult = scriptAssertContext.evaluateScriptAssertExpression(value, alias);
 
-        if (!validationResult && !reportOn.isEmpty()) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate(message).addPropertyNode(reportOn).addConstraintViolation();
+        if (!validationResult.getKey()) {
+            if (!reportOn.isEmpty() || validationResult.getValue() != null) {
+                String lastMessage = validationResult.getValue() != null ? validationResult.getValue() : message;
+                constraintValidatorContext.disableDefaultConstraintViolation();
+                final ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder =
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(lastMessage);
+                if (!reportOn.isEmpty()) {
+                    constraintViolationBuilder.addPropertyNode(reportOn);
+                }
+                constraintViolationBuilder.addConstraintViolation();
+            }
         }
 
-        return validationResult;
+        return validationResult.getKey();
     }
 
     private void validateParameters(ScriptConstraint constraintAnnotation) {
@@ -93,14 +103,14 @@ public class ScriptConstraintValidator extends AbstractScriptAssertValidator<Scr
             this.scriptEvaluator = scriptEvaluator;
         }
 
-        public boolean evaluateScriptAssertExpression(Object object, String alias) {
+        public Pair<Boolean, String> evaluateScriptAssertExpression(Object object, String alias) {
             Map<String, Object> bindings = newHashMap();
             bindings.put(alias, object);
 
             return evaluateScriptAssertExpression(bindings);
         }
 
-        public boolean evaluateScriptAssertExpression(Map<String, Object> bindings) {
+        public Pair<Boolean, String> evaluateScriptAssertExpression(Map<String, Object> bindings) {
             Object result;
 
             try {
@@ -112,21 +122,21 @@ public class ScriptConstraintValidator extends AbstractScriptAssertValidator<Scr
             return handleResult(result);
         }
 
-        private boolean handleResult(Object evaluationResult) {
+        private Pair<Boolean, String> handleResult(Object evaluationResult) {
             if (evaluationResult == null) {
                 throw LOG.getScriptMustReturnTrueOrFalseException(script);
             }
 
             if (!(evaluationResult instanceof Boolean)) {
-                throw LOG.getScriptMustReturnTrueOrFalseException(
-                        script,
-                        evaluationResult,
-                        evaluationResult.getClass().getCanonicalName()
-                );
+                if (evaluationResult instanceof String) {
+                    return Pair.of(Boolean.FALSE, evaluationResult.toString());
+                } else {
+                    throw new ConstraintDeclarationException(String.format("HV000025: Script \"%1$s\" returned %2$s (of type %3$s), but must return either true or false or string.",
+                            script, evaluationResult, evaluationResult.getClass().getCanonicalName()));
+                }
             }
 
-            return Boolean.TRUE.equals(evaluationResult);
+            return Pair.of(Boolean.TRUE.equals(evaluationResult), null);
         }
     }
-
 }

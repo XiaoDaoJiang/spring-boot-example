@@ -2,6 +2,7 @@ package com.xiaodao.validation.mapping;
 
 import cn.hutool.core.util.ClassUtil;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.cfg.ConstraintMapping;
 import org.hibernate.validator.cfg.context.PropertyConstraintMappingContext;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.util.List;
 
 @NoArgsConstructor
 public class MyJsonConstraintMappingContributor {
@@ -29,24 +31,27 @@ public class MyJsonConstraintMappingContributor {
                 // Class<?> clazz = Class.forName(classConstraints.getClassName());
                 ConstraintMapping mapping = configure.createConstraintMapping();
                 final TypeConstraintMappingContext<?> typeConstraintMappingContext = mapping.type(clazz);
-                if (constraints.getModelConstraints() != null) {
-                    typeConstraintMappingContext.constraint(constraints.getModelConstraints());
+                final List<ConstraintDefinition<? extends Annotation>> modelConstraints = constraints.getModelConstraints();
+                if (modelConstraints != null && !modelConstraints.isEmpty()) {
+                    modelConstraints.forEach(typeConstraintMappingContext::constraint);
                 }
-                for (ValidationConfig.PropertyConstraints property : constraints.getProperties()) {
-                    final PropertyConstraintMappingContext propertyConstraintMappingContext =
-                            typeConstraintMappingContext.property(property.getName(), ElementType.valueOf(property.getElementType()))
-                                    // 手动设置valid后 ignoreAnnotations 不管用
-                                    // .ignoreAnnotations(property.isIgnoreAnnotations())
-                                    .valid();
+                if (CollectionUtils.isNotEmpty(constraints.getProperties())) {
+                    for (ValidationConfig.PropertyConstraints property : constraints.getProperties()) {
+                        final PropertyConstraintMappingContext propertyConstraintMappingContext =
+                                typeConstraintMappingContext.property(property.getName(), ElementType.valueOf(property.getElementType()))
+                                        // 手动设置valid后 ignoreAnnotations 不管用
+                                        // .ignoreAnnotations(property.isIgnoreAnnotations())
+                                        .valid();
 
-                    if (property.getConstraints() != null) {
-                        for (ConstraintDefinition<? extends Annotation> constraintDef : property.getConstraints()) {
-                            // ConstraintDef<?, ?> def = ConstraintDefFactory.createConstraintDef(constraintDef);
-                            // propertyConstraintMappingContext.constraint(def);
-                            propertyConstraintMappingContext.constraint(constraintDef);
+                        if (property.getConstraints() != null) {
+                            for (ConstraintDefinition<? extends Annotation> constraintDef : property.getConstraints()) {
+                                // ConstraintDef<?, ?> def = ConstraintDefFactory.createConstraintDef(constraintDef);
+                                // propertyConstraintMappingContext.constraint(def);
+                                propertyConstraintMappingContext.constraint(constraintDef);
+                            }
                         }
-                    }
 
+                    }
                 }
                 configure.addMapping(mapping);
             }
