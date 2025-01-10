@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +12,13 @@ import org.springframework.stereotype.Component;
  * 使用场景：用户可以扩展这个类，来为要实例化的bean作一个代理，比如为该对象的所有的方法作一个拦截，在调用前后输出一行log，模仿ProxyFactoryBean的功能。
  *
  */
+@Slf4j
 @Component
 public class TestFactoryBean implements FactoryBean<TestFactoryBean.TestFactoryInnerBean> {
 
     @Override
     public TestFactoryBean.TestFactoryInnerBean getObject() throws Exception {
-        System.out.println("[FactoryBean] getObject");
+        log.trace("[FactoryBean] getObject");
         return new TestFactoryBean.TestFactoryInnerBean();
     }
 

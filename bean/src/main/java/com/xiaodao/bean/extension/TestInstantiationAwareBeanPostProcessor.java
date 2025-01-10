@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -21,36 +22,37 @@ import java.beans.PropertyDescriptor;
  * postProcessAfterInitialization：初始化bean之后，相当于把bean注入spring上下文之后
  * 使用场景：这个扩展点非常有用 ，无论是写中间件和业务中，都能利用这个特性。比如对实现了某一类接口的bean在各个生命期间进行收集，或者对某个类型的bean进行统一的设值等等。
  */
+@Slf4j
 @Component
 public class TestInstantiationAwareBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println("[TestInstantiationAwareBeanPostProcessor] before initialization " + beanName);
+        log.trace("[TestInstantiationAwareBeanPostProcessor] before initialization " + beanName);
         return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println("[TestInstantiationAwareBeanPostProcessor] after initialization " + beanName);
+        log.trace("[TestInstantiationAwareBeanPostProcessor] after initialization " + beanName);
         return bean;
     }
 
     @Override
     public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        System.out.println("[TestInstantiationAwareBeanPostProcessor] before instantiation " + beanName);
+        log.trace("[TestInstantiationAwareBeanPostProcessor] before instantiation " + beanName);
         return null;
     }
 
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
-        System.out.println("[TestInstantiationAwareBeanPostProcessor] after instantiation " + beanName);
+        log.trace("[TestInstantiationAwareBeanPostProcessor] after instantiation " + beanName);
         return true;
     }
 
     @Override
     public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
-        System.out.println("[TestInstantiationAwareBeanPostProcessor] postProcessPropertyValues " + beanName);
+        log.trace("[TestInstantiationAwareBeanPostProcessor] postProcessPropertyValues " + beanName);
         return pvs;
     }
 

@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.EventListener;
@@ -32,10 +33,11 @@ import org.springframework.stereotype.Component;
  * <p>
  * 这是一个 web-specific 事件，告诉所有 bean HTTP 请求已经被服务。只能应用于使用DispatcherServlet的Web应用。在使用Spring作为前端的MVC控制器时，当Spring处理用户请求结束后，系统会自动触发该事件
  */
+@Slf4j
 @Component
 public class TestApplicationListener implements ApplicationListener<ApplicationContextEvent> {
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
-        System.out.println("[TestApplicationListener] " + event.toString());
+        log.trace("[TestApplicationListener] " + event.toString());
     }
 }

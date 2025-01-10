@@ -1,3 +1,4 @@
+/*
 package com.xiaodao.bean;
 
 import com.xiaodao.bean.extension.TestApplicationContextInitializer;
@@ -53,3 +54,4 @@ public class BeanBootApplication implements CommandLineRunner {
 
     }
 }
+*/

@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -11,10 +12,11 @@ import org.springframework.stereotype.Component;
  * <p>
  * 使用场景为，你可以在bean实例化之后，但还未初始化之前，拿到 BeanFactory，在这个时候，可以对每个bean作特殊化的定制。也或者可以把BeanFactory拿到进行缓存，日后使用。
  */
+@Slf4j
 @Component
 public class TestBeanFactoryAware implements BeanFactoryAware {
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        System.out.println("[TestBeanFactoryAware] " + beanFactory.getBean(TestBeanFactoryAware.class).getClass().getSimpleName());
+        log.trace("[TestBeanFactoryAware] " + beanFactory.getBean(NormalBeanA.class).getClass().getSimpleName());
     }
 }

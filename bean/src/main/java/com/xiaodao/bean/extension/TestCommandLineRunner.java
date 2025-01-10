@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +10,12 @@ import org.springframework.stereotype.Component;
  * <p>
  * 使用场景：用户扩展此接口，进行启动项目之后一些业务的预处理。
  */
+@Slf4j
 @Component
 public class TestCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("[TestCommandLineRunner]");
+        log.trace("[TestCommandLineRunner]");
     }
 }

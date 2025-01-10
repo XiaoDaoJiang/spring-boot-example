@@ -1,5 +1,6 @@
 package com.xiaodao.bean.extension;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -24,29 +25,30 @@ import javax.annotation.PostConstruct;
  * @see org.springframework.beans.factory.DisposableBean
  * 这个扩展点也只有一个方法：destroy()，其触发时机为当此对象销毁时，会自动执行这个方法。比如说运行applicationContext.registerShutdownHook时，就会触发这个方法。
  */
+@Slf4j
 @Component
 public class NormalBeanA implements BeanNameAware, InitializingBean, DisposableBean {
     public NormalBeanA() {
-        System.out.println("NormalBean constructor");
+        log.trace("NormalBean constructor");
     }
 
     @Override
     public void setBeanName(String name) {
-        System.out.println("[BeanNameAware] " + name);
+        log.trace("[BeanNameAware] " + name);
     }
 
     @PostConstruct
     public void init() {
-        System.out.println("[PostConstruct] NormalBeanA");
+        log.trace("[PostConstruct] NormalBeanA");
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        System.out.println("[InitializingBean] NormalBeanA");
+        log.trace("[InitializingBean] NormalBeanA");
     }
 
     @Override
     public void destroy() throws Exception {
-        System.out.println("[DisposableBean] NormalBeanA");
+        log.trace("[DisposableBean] NormalBeanA");
     }
 }
