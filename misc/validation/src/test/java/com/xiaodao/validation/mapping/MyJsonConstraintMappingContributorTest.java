@@ -4,6 +4,7 @@ import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.xiaodao.validation.MyScriptEvaluatorFactory;
 import com.xiaodao.validation.User;
+import com.xiaodao.validation.custom.CustomPropertyNodeNameProvider;
 import com.xiaodao.validation.first.Bar;
 import com.xiaodao.validation.first.Car;
 import com.xiaodao.validation.first.Foor;
@@ -17,6 +18,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -38,7 +40,9 @@ public class MyJsonConstraintMappingContributorTest {
     public void setUp() {
         final HibernateValidatorConfiguration hibernateValidatorConfiguration = Validation.byProvider(HibernateValidator.class)
                 .configure();
+        final CustomPropertyNodeNameProvider customPropertyNodeNameProvider = new CustomPropertyNodeNameProvider(Locale.getDefault());
         final HibernateValidatorConfiguration configure = hibernateValidatorConfiguration
+                .propertyNodeNameProvider(customPropertyNodeNameProvider)
                 .scriptEvaluatorFactory(new MyScriptEvaluatorFactory(ClassLoaderUtil.getClassLoader()));
         final MyJsonConstraintMappingContributor myJsonConstraintMappingContributor = new MyJsonConstraintMappingContributor();
         myJsonConstraintMappingContributor.addMapping(jsonConfigPath, configure);
@@ -63,7 +67,7 @@ public class MyJsonConstraintMappingContributorTest {
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         for (ConstraintViolation<User> violation : violations) {
-            System.out.println(violation.getPropertyPath() + ": " + violation.getMessage());
+            System.out.println(violation.getPropertyPath().toString() + ": " + violation.getMessage());
         }
     }
 
