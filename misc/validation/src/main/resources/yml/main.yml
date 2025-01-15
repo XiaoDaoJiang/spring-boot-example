@@ -1,0 +1,3 @@
+name: Main File
+reference:
+  <<: ./reference
