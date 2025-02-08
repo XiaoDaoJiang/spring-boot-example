@@ -22,7 +22,7 @@ import java.util.Map;
 //  要么直接 uses = {CustomerRawOrderItemListConverter.class}
 // 要么直接在当前转换器中使用定义对象的转换方法
 // @Mapper(config = MapperSpringConfig.class, uses = {ConversionServiceAdapter.class})
-@Mapper(config = MapperSpringConfig.class, uses = {CustomerRawOrderItemListConverter.class})
+@Mapper(config = MapperSpringConfig.class)
 public interface CustomerRawConverter extends Converter<CustomerRawDto, CustomerDto> {
 
     @Mapping(target = "id", ignore = true)
