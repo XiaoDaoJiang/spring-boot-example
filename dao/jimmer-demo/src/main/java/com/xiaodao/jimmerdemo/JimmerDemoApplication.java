@@ -35,10 +35,10 @@ public class JimmerDemoApplication {
         public HttpEntity<Object> hello() {
             int pageIndex = 0;
             int pageSize = 10;
-            Fetcher<Book> fetcher = null;
-            // Fetcher<Book> fetcher = BookFetcher.$.allScalarFields()
-            //         .store(BookStoreFetcher.$.allScalarFields())
-            //         .authors(AuthorFetcher.$.allScalarFields());
+            // Fetcher<Book> fetcher = null;
+            Fetcher<Book> fetcher = BookFetcher.$.allScalarFields()
+                    .store(BookStoreFetcher.$.allScalarFields())
+                    .authors(AuthorFetcher.$.allScalarFields());
             String sortCode = "";
             String name = null;
             BigDecimal minPrice = null;

@@ -1,8 +1,10 @@
 {
-  "filedMappingRules": {
-    "taskCode": {
-      "alias": "考试科目",
-      "constant": "科目一"
+  "个人标签": {
+    "filedMappingRules": {
+      "taskCode": {
+        "alias": "考试科目",
+        "constant": "科目一"
+      }
     }
   }
 }

@@ -49,25 +49,6 @@
             <version>${jimmer.version}</version>
         </dependency>
 
-        <!-- multi modules use dependency -->
-        <!-- 用户编写的实体代码所需的依赖 -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.babyfish.jimmer</groupId> -->
-        <!--     <artifactId>jimmer-core</artifactId> -->
-        <!--     <version>${jimmer.version}</version> -->
-        <!-- </dependency> -->
-        <!-- 生成的代码所需的依赖 -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.babyfish.jimmer</groupId> -->
-        <!--     <artifactId>jimmer-sql</artifactId> -->
-        <!--     <version>${jimmer.version}</version> -->
-        <!--     &lt;!&ndash;其他项目必然导入包含此依赖&ndash;&gt; -->
-        <!--     <scope>provided</scope> -->
-        <!-- </dependency> -->
-
-        <!-- jimmer end -->
-
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -91,6 +72,12 @@
             <artifactId>mapstruct-spring-test-extensions</artifactId>
             <scope>test</scope>
             <version>${mapstruct.extensions.spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xiaodao</groupId>
+            <artifactId>jimmer-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

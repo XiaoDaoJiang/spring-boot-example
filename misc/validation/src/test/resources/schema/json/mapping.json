@@ -32,8 +32,5 @@
         "mappingFormula": "格式化日期(日期减年份(起飞日期, 年龄),'yyyy-01-01')"
       }
     }
-  },
-  "个人标签": {
-    "include ": "personTag.json"
   }
 }
