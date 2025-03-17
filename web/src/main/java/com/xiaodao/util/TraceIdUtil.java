@@ -32,6 +32,6 @@ public class TraceIdUtil {
 
 
     public static void removeTraceId() {
-        MDC.clear();
+        MDC.remove(TRACE_ID_KEY);
     }
 }
