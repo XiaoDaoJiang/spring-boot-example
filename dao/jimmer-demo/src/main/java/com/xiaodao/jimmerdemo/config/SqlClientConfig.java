@@ -3,6 +3,7 @@ package com.xiaodao.jimmerdemo.config;
 import com.xiaodao.jimmerdemo.model.TreeNode;
 import org.babyfish.jimmer.spring.SqlClients;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.runtime.DatabaseValidationMode;
 import org.babyfish.jimmer.sql.runtime.EntityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -42,7 +43,7 @@ public class SqlClientConfig {
             @Qualifier("ds1") DataSource dataSource
     ) {
         return SqlClients.java(ctx, dataSource, builder -> {
-            builder.setDatabaseValidationCatalog("jimmer_demo");
+            // builder.setDatabaseValidationCatalog("jimmer_demo");
         });
     }
 
@@ -52,7 +53,7 @@ public class SqlClientConfig {
             @Qualifier("ds2") DataSource dataSource
     ) {
         return SqlClients.java(ctx, dataSource, builder -> {
-            builder.setDatabaseValidationCatalog("jimmer_demo_2")
+            builder/* .setDatabaseValidationCatalog("jimmer_demo_2") */
                     .setEntityManager(EntityManager.fromResources(null, clazz -> !clazz.equals(TreeNode.class)));
             // .setEntityManager(EntityManager.fromResources(null, clazz -> clazz.getPackageName().startsWith("com.xiaodao.jimmerdemo")));
         });

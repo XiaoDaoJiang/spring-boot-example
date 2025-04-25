@@ -1,12 +1,27 @@
 BookDetailView {
-
     #allScalars
-
     store {
         #allScalars
     }
-
     authors {
         #allScalars
     }
+
+    comments {
+        #allScalars
+    }
+}
+
+
+BookTestView {
+    #allScalars
+    authors {
+        #allScalars
+    }
+}
+
+
+input BookInput {
+    #allScalars
+    storeId
 }

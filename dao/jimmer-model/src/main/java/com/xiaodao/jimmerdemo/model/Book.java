@@ -17,7 +17,7 @@ public interface Book {
     String name();
 
     @Key
-    int edition();
+    String edition();
 
     BigDecimal price();
 
@@ -43,4 +43,17 @@ public interface Book {
 
     @IdView("authors")
     List<Long> authorIds();
+
+/*     @Column(name = "publish_year")
+    Integer publishYear(); */
+
+    @OneToMany(mappedBy = "book")
+    List<BookComment> comments();
+
+/*     @Transient(CustomerDataResolver.class)
+    BookPrice priceInfo(); */
+
+    @PropOverride(prop = "publisherEdition", columnName ="publisher_edition")
+    BookPublisher bookPublisher();
+
 }

@@ -1,3 +1,4 @@
+/*
 package com.xiaodao.jimmerdemo.model;
 
 
@@ -23,4 +24,4 @@ public interface BookJRepository extends JRepository<Book, Long> {
     );
 
     long countByName(String name);
-}
+}*/
