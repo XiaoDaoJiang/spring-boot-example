@@ -1,0 +1,6 @@
+export com.xiaodao.graalvm.model.Book
+    -> package com.xiaodao.graalvm.model.dto
+
+BookDetailView {
+    #allScalars
+}
