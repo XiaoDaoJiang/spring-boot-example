@@ -1,4 +1,3 @@
-/*
 package com.xiaodao.graalvm.model;
 
 import org.babyfish.jimmer.sql.*;
@@ -21,4 +20,4 @@ public interface Book {
     BigDecimal price();
 
 
-}*/
+}

@@ -1,4 +1,3 @@
-/*
 package com.xiaodao.graalvm.model;
 
 
@@ -24,4 +23,3 @@ public interface BookJRepository extends JRepository<Book, Long> {
 
     long countByName(String name);
 }
-*/

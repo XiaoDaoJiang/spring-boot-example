@@ -14,7 +14,7 @@
     <name>graalvm</name>
     <description>graalvm</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>24</java.version>
         <jimmer.version>0.9.73</jimmer.version>
     </properties>
     <dependencies>
@@ -29,7 +29,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
             <groupId>org.babyfish.jimmer</groupId>
             <artifactId>jimmer-spring-boot-starter</artifactId>
             <version>${jimmer.version}</version>
@@ -38,12 +38,12 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -55,18 +55,30 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <configuration>
+                    <!-- 存储库下载元数据 为默认情况下不支持 GraalVM 原生映像的库提供了 GraalVM 配置 -->
+                    <metadataRepository>
+                        <enabled>true</enabled>
+                    </metadataRepository>
+                    <!-- <agent>
+                        <enabled>true</enabled>
+                    </agent> -->
                     <buildArgs>
+                        <!-- 3. Quick build mode -->
+                        <buildArg>-Ob</buildArg>
+                        <buildArg>-march=native</buildArg>
                         <!-- 构建完成时，输出报告 -->
                         <buildArg>--emit build-report</buildArg>
                         <!-- 启用新的用户友好可达性元数据模式 -->
-                        <buildArg>--exact-reachability-metadata</buildArg>
-                        <!-- 要检测应用程序意外忽略缺失注册错误 -->
-                        <!-- <buildArg>-XX:MissingRegistrationReportingMode=Warn</buildArg> -->
+                        <!-- <buildArg>&#45;&#45;exact-reachability-metadata</buildArg> -->
+                        <!-- 启动时 -XX:MissingRegistrationReportingMode=Warn 要检测应用程序意外忽略缺失注册错误 -->
+                        <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+                        <!-- <buildArg>-H:PrintFlags=Debug</buildArg> -->
+                        <buildArg>-H:PredefinedClassesConfigurationResources=META-INF/native-image/predefined-classes-config.json</buildArg>
                     </buildArgs>
                     <!-- <jvmArgs> -->
                     <!--     <jvmArg>-XX:MissingRegistrationReportingMode=Warn</jvmArg> -->
