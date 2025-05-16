@@ -1,0 +1,65 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+{
+  "rules": [
+    {
+      "name": "java17-springnative",
+      "description": "这是一个基于 Java 17 和 Spring Boot 3.4.5 的 GraalVM 原生镜像项目，使用 Jimmer ORM 框架。项目结构遵循标准的 Maven 项目布局。",
+      "patterns": [
+        {
+          "name": "java-source",
+          "pattern": "src/main/java/**/*.java",
+          "description": "Java 源代码文件"
+        },
+        {
+          "name": "resources",
+          "pattern": "src/main/resources/**/*",
+          "description": "资源文件，包括配置文件"
+        },
+        {
+          "name": "dto",
+          "pattern": "src/main/dto/**/*.java",
+          "description": "数据传输对象（DTO）类"
+        },
+        {
+          "name": "test",
+          "pattern": "src/test/**/*",
+          "description": "测试相关文件"
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "spring-boot",
+          "version": "3.4.5",
+          "description": "Spring Boot 框架"
+        },
+        {
+          "name": "jimmer",
+          "version": "0.9.73",
+          "description": "Jimmer ORM 框架"
+        },
+        {
+          "name": "mysql",
+          "description": "MySQL 数据库驱动"
+        }
+      ],
+      "build": {
+        "tool": "maven",
+        "plugins": [
+          {
+            "name": "native-maven-plugin",
+            "description": "GraalVM 原生镜像构建插件"
+          },
+          {
+            "name": "spring-boot-maven-plugin",
+            "description": "Spring Boot Maven 插件"
+          }
+        ]
+      }
+    }
+  ]
+}
+
