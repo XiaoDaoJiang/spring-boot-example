@@ -24,14 +24,30 @@
      主线程先将当前上下文copy（MDC.getCopyOfContextMap()）出来，跟随任务一起传递到子线程中，工作线程手动将副本关联（MDC.setContextMap(Map<String, String> contextMap)）
      > 在这种情况下，建议在向执行器提交任务之前在原始（主）线程上调用 MDC.getCopyOfContextMap()。当任务运行时，作为其第一个操作，它应该调用 MDC.setContextMap() 将原始 MDC 值的存储副本与新的 Executor 托管线程关联起来。
 
-
    * SkyWalking TraceContext.traceId()
    * Logback Appender layout Pattern
      ```xml
      <!-- 格式化输出：%d 表示日期，%X{tid} SkWalking 链路追踪编号，%thread 表示线程名，%-5level：级别从左显示 5 个字符宽度，%msg：日志消息，%n是换行符 -->
      <property name="PATTERN_DEFAULT" value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} | %highlight(${LOG_LEVEL_PATTERN:-%5p} ${PID:- }) | %boldYellow(%thread [%tid]) %boldGreen(%-40.40logger{39}) | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
-
      ```
+6. Feign RequestInterceptor
+    ```java
+   @Configuration
+   public class FeignTraceConfig {
+    
+    
+        @Bean
+        public RequestInterceptor traceIdRequestInterceptor() {
+            return template -> {
+                String traceId = MDC.get(TRACE_ID);
+                if (traceId != null && !template.headers().containsKey(TRACE_ID)) {
+                    template.header(TRACE_ID, traceId);
+                }
+            };
+        }
+    }
+   ```
+   
 
 ## 主要难点
 1. request、response 需要包装为带缓冲，能够多次读取
