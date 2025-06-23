@@ -3,7 +3,6 @@ package com.xiaodao.filter.contentcache;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import org.slf4j.Logger;
-import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -26,8 +25,10 @@ import java.util.function.Predicate;
 
 /**
  * 支持异步请求
+ * 需要配置 @ServletComponentScan
  */
-@Order(-1)
+// @Order(-1)
+// @WebFilter 无法控制顺序
 @WebFilter(filterName = "cachingRequestLogFilter", urlPatterns = "/*",
         dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.ASYNC}, asyncSupported = true)
 public class CachingRequestLogFilter extends MDCLoggingFilter {

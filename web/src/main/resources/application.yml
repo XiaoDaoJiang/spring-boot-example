@@ -11,4 +11,5 @@ logging:
   level:
     web: debug
     com.xiaodao.filter.contentcache.CachingRequestLogFilter: debug
+    org.springframework.boot.web.servlet.ServletContextInitializerBeans: trace
 #    org.springframework.web.filter.GenericFilterBean: debug
