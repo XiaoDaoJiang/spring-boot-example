@@ -1,10 +1,10 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   profiles:
     #  单缓存管理器
-    active: cache-alone
+    active: simple-1
   datasource:
     url: jdbc:h2:mem:TEST;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
@@ -25,13 +25,16 @@ spring:
       repositories:
         enabled: false
   cache:
-    type: none
-#    time-to-lives:
-#      user: 10m
+    type: redis
+    time-to-lives:
+      user: 10m
+      "[x,y]": 20h
     redis:
       key-prefix: "redis:cache:"
+      # 默认缓存过期时间
+      time-to-live: 6h
     composite:
-      enabled: true
+      enabled: false
       cache-type: redis
   redis:
     host: localhost

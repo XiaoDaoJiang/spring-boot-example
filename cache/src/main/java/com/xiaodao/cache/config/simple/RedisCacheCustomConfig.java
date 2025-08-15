@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xiaodao.cache.config.RedisTtlProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -19,11 +21,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -34,29 +34,13 @@ import java.util.Arrays;
  *
  * @see org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration#cacheManager(CacheProperties, CacheManagerCustomizers, ObjectProvider, ObjectProvider, RedisConnectionFactory, ResourceLoader)
  */
-@Profile("simple")
+@Profile("simple-2")
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
+@AutoConfigureAfter(CacheAutoConfiguration.class)
 @Configuration
-@EnableConfigurationProperties({RedisTtlProperties.class})
+@EnableConfigurationProperties({RedisTtlProperties.class, CacheProperties.class})
 public class RedisCacheCustomConfig extends CachingConfigurerSupport {
-    @Bean
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
 
-        RedisSerializer<Object> redisSerializer = this.getRedisSerializer();
-
-        // 使用StringRedisSerializer来序列化和反序列化redis的key值
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(redisSerializer);
-
-        // Hash的key也采用StringRedisSerializer的序列化方式
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(redisSerializer);
-
-        template.afterPropertiesSet();
-        return template;
-    }
 
     /**
      * 自定义默认 RedisCacheConfiguration 设置值序列化方式，该配置会覆盖默认的缓存配置

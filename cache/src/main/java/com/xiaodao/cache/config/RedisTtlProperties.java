@@ -14,7 +14,7 @@ import java.util.Map;
  * <pre>
  *     spring:
  *       cache:
- *         time-to-live:
+ *         time-to-lives:
  *             cache-name1: 10m
  *             # 多个key 请求使用逗号分割，并且使用"[]"包裹
  *             "[cache1,cache2]": 20h
