@@ -156,11 +156,27 @@ Segment-LRU 分为两部分，一部分为 Protected Deque，一部分为 Probat
     - 它可以序列化任意类型的对象，并在序列化时包含对象的类信息（类型信息）。
     - 在反序列化时，它使用类信息来恢复对象的类型，以便正确地将数据转换回原始对象类型。
     - 这意味着可以在 Redis 存储中存储多种类型的对象，并在反序列化时正确地还原它们的类型。
+   ```json
+   {
+        "@class": "com.xiaodao.common.entity.User",
+        "createBy": null,
+        "createTime": null,
+        "modifyBy": null,
+        "modifyTime": null,
+        "id": 1,
+        "name": "Jone",
+        "age": 18
+    }
+    ```
 
 2. `Jackson2JsonRedisSerializer`：
     - 也是基于 Jackson 库的序列化器。
     - 它主要用于序列化和反序列化指定的类类型（例如，特定的实体类）。
-    - 它不包含对象的类信息（类型信息），因此在反序列化时，必须明确指定要转换的目标类型。
+    - 它可以不包含对象的类信息（类型信息），因此在反序列化时，必须明确指定要转换的目标类型。
+      - 必须通过 `enableDefaultTyping`/`activateDefaultTyping` 的方式将类型信息包含在序列化数据中，否则会使用默认Java类型反序列化：
+        * 序列化时：Jackson 会将对象序列化为 JSON，但 JSON 中不包含具体的类型信息
+        * 不配置反序列化时：Jackson 只知道目标类型是 Object，无法确定应该反序列化成什么具体类型，默认会反序列化为 LinkedHashMap。
+   
 
 两者的区别主要在于序列化和反序列化时是否包含对象的类信息。`GenericJackson2JsonRedisSerializer` 包含类信息，可以处理多种类型的对象，而 `Jackson2JsonRedisSerializer` 则需要明确指定目标类型。
 

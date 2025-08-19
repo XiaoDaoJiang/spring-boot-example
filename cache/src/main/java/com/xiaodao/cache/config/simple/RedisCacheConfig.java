@@ -1,13 +1,16 @@
 package com.xiaodao.cache.config.simple;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.xiaodao.cache.config.RedisTtlProperties;
+import com.xiaodao.common.entity.User;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,7 +22,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -27,7 +30,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -54,14 +56,36 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
 
     public static CacheManager buildRedisCacheManager(CacheProperties cacheProperties, RedisTtlProperties redisTtlProperties, LettuceConnectionFactory lettuceConnectionFactory) {
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        ObjectMapper mapper = new ObjectMapper();
 
-        //解决查询缓存转换异常的问题
-        ObjectMapper om = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
+        // 更安全的类型处理配置
+        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
+                .allowIfSubType(Object.class) // 允许所有类型，也可以更具体地限制
+                // .allowIfSubType(User.class).allowIfBaseType("java.")
+                .build();
+
+        mapper.activateDefaultTyping(
+                typeValidator,
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY
+        );
+
+        // 时间处理
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.registerModule(new JavaTimeModule());
+
+        // 字段处理
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        RedisSerializer<Object> serializer = new GenericJackson2JsonRedisSerializer(mapper);
+
+        // Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        // ObjectMapper om = new ObjectMapper();
+        // om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        // om.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        // 启用记录类型信息，类似 GenericJackson2JsonRedisSerializer
+        // om.activateDefaultTyping(om.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        // jackson2JsonRedisSerializer.setObjectMapper(om);
 
         // 设置默认配置（失效时间默认为0，永不过期）
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
@@ -69,7 +93,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
                 //                .entryTtl(Duration.ofSeconds(20))   //设置缓存失效时间
                 .entryTtl(cacheProperties.getRedis().getTimeToLive())
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
                 .prefixCacheNameWith(cacheProperties.getRedis().getKeyPrefix());
 
         // 自定义缓存失效时间

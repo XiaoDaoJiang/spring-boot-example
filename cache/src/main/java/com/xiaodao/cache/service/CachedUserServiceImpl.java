@@ -89,7 +89,9 @@ public class CachedUserServiceImpl implements IUserService {
     @Override
     @Cacheable(key = "#id", condition = "#id > 0")
     public User queryById(Long id) {
-        return userRepository.findById(id).get();
+        final User user = userRepository.findById(id).get();
+        user.setCreateTime(LocalDateTime.now());
+        return user;
     }
 
     /**
