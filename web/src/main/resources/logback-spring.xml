@@ -1,10 +1,20 @@
 <configuration>
     <!-- 引用 Spring Boot 的 logback 基础配置 -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <!-- 变量 yudao.info.base-package，基础业务包 -->
     <springProperty scope="context" name="yudao.info.base-package" source="yudao.info.base-package"/>
     <!-- 格式化输出：%d 表示日期，%X{tid} SkWalking 链路追踪编号，%thread 表示线程名，%-5level：级别从左显示 5 个字符宽度，%msg：日志消息，%n是换行符 -->
-    <property name="PATTERN_DEFAULT" value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} | %highlight(${LOG_LEVEL_PATTERN:-%5p} ${PID:- }) | %boldYellow(%thread [%X{tid}]) %boldGreen(%-40.40logger{39}) | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <!-- logger 通常就是类名或自定义的Logger名称  -->
+    <property name="PATTERN_DEFAULT"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} | %highlight(${LOG_LEVEL_PATTERN:-%5p} ${PID:- }) | %boldYellow(%thread [%X{tid}]) %boldGreen(%-40.40logger{39}) | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <!-- 日志文件不打印颜色  -->
+    <property name="FILE_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} | ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } | %thread [%X{tid}] %-40.40logger{39} | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+
+    <property name="LOG_PATH" value="${LOG_PATH:-./logs}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH}/application.log}"/>
 
     <!-- 控制台 Appender -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">　　　　　
@@ -17,17 +27,18 @@
 
     <!-- 文件 Appender -->
     <!-- 参考 Spring Boot 的 file-appender.xml 编写 -->
-    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>${PATTERN_DEFAULT}</pattern>
+                <pattern>${FILE_PATTERN}</pattern>
             </layout>
         </encoder>
         <!-- 日志文件名 -->
         <file>${LOG_FILE}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 滚动后的日志文件名 -->
-            <fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}</fileNamePattern>
+            <fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}
+            </fileNamePattern>
             <!-- 启动服务时，是否清理历史日志，一般不建议清理 -->
             <cleanHistoryOnStart>${LOGBACK_ROLLINGPOLICY_CLEAN_HISTORY_ON_START:-false}</cleanHistoryOnStart>
             <!-- 日志文件，到达多少容量，进行滚动 -->
@@ -60,16 +71,16 @@
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
-<!--            <appender-ref ref="GRPC"/> &lt;!&ndash; 本地环境下，如果不想接入 SkyWalking 日志服务，可以注释掉本行 &ndash;&gt;-->
-<!--            <appender-ref ref="ASYNC"/>  &lt;!&ndash; 本地环境下，如果不想打印日志，可以注释掉本行 &ndash;&gt;-->
+            <!--            <appender-ref ref="GRPC"/> &lt;!&ndash; 本地环境下，如果不想接入 SkyWalking 日志服务，可以注释掉本行 &ndash;&gt;-->
+            <!--            <appender-ref ref="ASYNC"/>  &lt;!&ndash; 本地环境下，如果不想打印日志，可以注释掉本行 &ndash;&gt;-->
         </root>
     </springProfile>
     <!-- 其它环境 -->
     <springProfile name="dev,test,stage,prod,default">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
-<!--            <appender-ref ref="ASYNC"/>-->
-<!--            <appender-ref ref="GRPC"/>-->
+            <!-- <appender-ref ref="ASYNC"/> -->
+            <!-- <appender-ref ref="GRPC"/> -->
         </root>
     </springProfile>
 
