@@ -33,10 +33,16 @@ public class SpringSPI implements BeanClassLoaderAware, ApplicationContextAware 
     public String[] list() {
         final List<NameProvider> nameProviders = SpringFactoriesLoader.loadFactories(NameProvider.class, classLoader);
 
-        return nameProviders.stream().map(b->{
+        return nameProviders.stream().map(b -> {
             applicationContext.getAutowireCapableBeanFactory().autowireBean(b);
             return b.getName();
         }).toArray(String[]::new);
+    }
+
+    public <T> T getPrototypeBean(Class<T> clazz) {
+        final List<T> loaded = SpringFactoriesLoader.loadFactories(clazz, classLoader);
+        loaded.forEach(bean -> applicationContext.getAutowireCapableBeanFactory().autowireBean(bean));
+        return loaded.get(0);
     }
 
     @Override

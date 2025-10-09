@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * 测试SPI
  *
@@ -28,7 +30,21 @@ public class SPITestBootstrap {
 
     @Test
     public void testName() {
+        // auto wired from SpringSpiAutoConfiguration
         System.out.println(nameProvider.getName());
+    }
+
+    @Test
+    public void testNameProviderFromSPILoadManual() {
+        System.out.println(nameProvider);
+
+        NameProvider nameProvider1 = springSPI.getPrototypeBean(NameProvider.class);
+        System.out.println(nameProvider1);
+
+        NameProvider nameProvider2 = springSPI.getPrototypeBean(NameProvider.class);
+        System.out.println(nameProvider2);
+
+        assertThat(nameProvider1).isNotSameAs(nameProvider2);
     }
 
     @TestConfiguration
